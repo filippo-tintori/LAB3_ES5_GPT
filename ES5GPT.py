@@ -122,6 +122,8 @@ def esercitazioneB(parte):
         print("Segnale filtrato sintetizzato usando FFT inversa.")
     else:
         print("Parte non riconosciuta.")
+        
+# SI DEVE METTERE UN ATTRIBUTO PER FORZA
 
 def main():
     parser = argparse.ArgumentParser(description="Esercitazioni audio.")
