@@ -104,11 +104,7 @@ def mascheraRumore(fft_coeff, potenza):
 # def funz di main
 
 def esercitazioneA():
-<<<<<<< HEAD
     print("Esercitazione A: ") # da fare
-=======
-    print("Esercitazione A: ancora da implementare")
->>>>>>> 218db9b8ca50a9b6754e4338e9eb80cdf76220cc
 
 def esercitazioneB(parte):
     if parte == "1":
