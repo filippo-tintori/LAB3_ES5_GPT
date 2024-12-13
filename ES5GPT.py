@@ -52,7 +52,7 @@ def fftSegnale(dati):
     """Calcola la FFT del segnale."""
     fft_coeff = np.fft.fft(dati)
     potenza = np.abs(fft_coeff)**2
-    return fft_coeff, potenza
+    return fft_coeff[:len(fft_coeff)//2], potenza[:len(fft_coeff)//2]
 
 def plottaFFT(fft_coeff, potenza):
     """Plotta potenza, parte reale e parte immaginaria dei coefficienti FFT."""
@@ -62,7 +62,7 @@ def plottaFFT(fft_coeff, potenza):
     plt.subplot(3, 1, 1)
     plt.plot(freq, potenza)
     plt.title("Potenza")
-    plt.xlabel("Frequenza")
+    plt.xlabel("Frequenza")[:n//2]
     plt.ylabel("Potenza")
 
     plt.subplot(3, 1, 2)
@@ -105,6 +105,7 @@ def mascheraRumore(fft_coeff, potenza):
 
 def esercitazioneA():
     print("Esercitazione A: ") # da fare
+    # vedere dalle slide cosa si deve aggiungere
 
 def esercitazioneB(parte):
     if parte == "1":
