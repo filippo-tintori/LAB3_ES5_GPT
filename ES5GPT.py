@@ -97,7 +97,7 @@ def risintetizzaSegnale(fft_coeff):
 
 def risintetizzaSeniCoseni(fft_coeff):
     """Ri-sintetizza il segnale usando seni e coseni."""
-    # Filtro i coefficienti con modulo maggiore di una soglia
+    # coefficienti con modulo maggiore di una soglia
     soglia = 1e-6
     print(f"FFT originale: {len(fft_coeff)} coefficienti")
     fft_coeff_filtrati = fft_coeff[np.abs(fft_coeff) > soglia]
