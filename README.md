@@ -1,4 +1,7 @@
-# LAB3_ES5_GPT
+LAB3_ES5_GPT
 
-Commenti da fare:
+Modifiche da fare:
 -
+
+Commenti:
+.
