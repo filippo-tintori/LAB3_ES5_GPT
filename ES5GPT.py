@@ -90,17 +90,21 @@ def plottaFFT(fft_coeff, potenza):
     plt.tight_layout()
     plt.show()
 
+def mascheraRumore(fft_coeff, soglia=1e-6):
+    """Rimuove i coefficienti con potenza minima."""
+    print(f"FFT originale: {len(fft_coeff)} coefficienti")
+    potenza = np.abs(fft_coeff)**2
+    fft_coeff_filtrati = fft_coeff[potenza >= soglia]
+    print(f"Numero di coefficienti non nulli: {len(fft_coeff_filtrati)}")
+    return fft_coeff_filtrati
+
 def risintetizzaSegnale(fft_coeff):
     """Ri-sintetizza il segnale usando la FFT inversa."""
-    return np.fft.ifft(fft_coeff).real
+    fft_coeff_filt = mascheraRumore(fft_coeff)
+    return np.fft.ifft(fft_coeff_filt).real
 
 def risintetizzaSeniCoseni(fft_coeff):
     """Ri-sintetizza il segnale usando seni e coseni."""
-    # prendo coefficienti con modulo minori di una soglia
-    soglia = 1e-6
-    print(f"FFT originale: {len(fft_coeff)} coefficienti")
-    fft_coeff_filtrati = fft_coeff[np.abs(fft_coeff) > soglia]
-    print(f"Numero di coefficienti non nulli: {len(fft_coeff_filtrati)}")
     
     # Ri-sintetizza il segnale
     t_index = len(fft_coeff_filtrati)
@@ -115,31 +119,24 @@ def risintetizzaSeniCoseni(fft_coeff):
         segnale[t] = somma / t_index
     return segnale
 
-def mascheraRumore(fft_coeff, potenza, soglia=1e-6):
-    """Maschera il rumore ponendo a zero i coefficienti con potenza minima."""
-    fft_coeff_filtrati = fft_coeff.copy()
-    fft_coeff_filtrati[np.abs(fft_coeff_filtrati**2) < soglia] = 0
-    return fft_coeff_filtrati
-
 # def funz di main
 
 def esercitazioneA():
     print("Esercitazione A: ") # da fare
     file = parteA[0]
-    a, b = apriAudio(file)
-    plottaWaveform(a,b)
-    c, d = fftSegnale(b)
-    plottaFFT(c,d)
+    freq_camp, dati = apriAudio(file)
+    plottaWaveform(freq_camp, dati)
+    coeff, potenza = fftSegnale(dati)
+    plottaFFT(coeff,potenza)
     #antr=risintetizzaSegnale(c)
     #sign=risintetizzaSeniCoseni(c)
     #plottaRisintonizzata(b,sign)
     #plottaRisintonizzata(b,antr)
-    e = mascheraRumore (c, d)
-    ants=risintetizzaSegnale(e)
-    signs=risintetizzaSeniCoseni(e)
-    plottaRisintonizzata(b,signs)
-    plottaRisintonizzata(b,ants)
-    
+    filt = mascheraRumore (coeff, potenza)
+    ants=risintetizzaSegnale(filt)
+    signs=risintetizzaSeniCoseni(filt)
+    plottaRisintonizzata(dati, signs)
+    plottaRisintonizzata(dati, ants)
     
 
 def esercitazioneB(parte):
