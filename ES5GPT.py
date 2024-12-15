@@ -11,6 +11,20 @@ parteA = [
     "https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/data3.txt"
 ]
 
+parteB = [
+    ["https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/diapason.wav",
+    "https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/pulita_semplice.wav",
+    "https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/pulita_media.wav",
+    "https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/pulita_difficile.wav",
+    "https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/distorta.wav"],
+    
+    ["https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/pulita_pezzo.wav",
+    "https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/distorta_pezzo.wav"],
+    
+    ["https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/primo.wav",
+    "https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/secondo.wav"]
+]
+
 def apriAudio(nome_file):
     """Apre un file di testo e restituisce la frequenza di campionamento e i dati."""
     dati = np.loadtxt(nome_file)
@@ -123,14 +137,37 @@ def esercitazioneA():
 
         plottaRisintonizzata(dati, segnale_fft)
         plottaRisintonizzata(dati, segnale_seni_coseni)
+        
+def esercitazioneB(parte):
+    if parte == "1":
+        freq_camp, dati = apriAudio("audio.wav")
+        plottaWaveform(freq_camp, dati)
+    elif parte == "2":
+        freq_camp, dati = apriAudio("audio.wav")
+        fft_coeff, potenza = fftSegnale(dati)
+        plottaFFT(fft_coeff, potenza)
+    elif parte == "3":
+        freq_camp, dati = apriAudio("audio.wav")
+        fft_coeff, potenza = fftSegnale(dati)
+        fft_coeff_filtrato = mascheraRumore(fft_coeff, potenza)
+        segnale_filtrato = risintetizzaSegnale(fft_coeff_filtrato)
+        print("Segnale filtrato sintetizzato usando FFT inversa.")
+    else:
+        print("Parte non riconosciuta.")
 
 def main():
     parser = argparse.ArgumentParser(description="Esercitazioni audio.")
-    parser.add_argument("esercitazione", choices=["A"], help="Seleziona l'esercitazione.")
+    parser.add_argument("esercitazione", choices=["A", "B"], help="Seleziona l'esercitazione.")
+    parser.add_argument("parte", nargs="?", help="Seleziona la parte dell'esercitazione (solo per B).")
     args = parser.parse_args()
 
     if args.esercitazione == "A":
         esercitazioneA()
+    elif args.esercitazione == "B":
+        if args.parte:
+            esercitazioneB(args.parte)
+        else:
+            print("Per l'esercitazione B, specificare una parte (1, 2 o 3).")
 
 if __name__ == "__main__":
     main()
