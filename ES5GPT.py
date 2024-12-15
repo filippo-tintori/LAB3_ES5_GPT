@@ -1,7 +1,9 @@
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.io.wavfile as wav
 from tqdm import tqdm
+#import soundfile # NON SERVE
 import pandas as pd
 
 # Link utili - URL GLOBALI
@@ -26,9 +28,15 @@ parteB = [
 ]
 
 def apriAudio(nome_file):
-    """Apre un file di testo e restituisce la frequenza di campionamento e i dati."""
-    dati = np.loadtxt(nome_file)
-    freq_camp = 44100  # Frequenza di campionamento fornita
+    """Apre un file audio e restituisce la frequenza di campionamento e i dati."""
+    if nome_file.endswith(".wav"):
+        freq_camp, dati = wav.read(nome_file)
+    elif nome_file.endswith(".txt"):
+        dati = np.loadtxt(nome_file)
+        freq_camp = 44100 # freq fornita
+    else:
+        raise ValueError("Formato di file non supportato. Usa .wav o .txt.")
+    print("File aperto e utilizzabile.")
     return freq_camp, dati
 
 def plottaWaveform(dati):
