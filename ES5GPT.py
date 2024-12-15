@@ -97,12 +97,12 @@ def risintetizzaSegnale(fft_coeff):
 
 def risintetizzaSeniCoseni(fft_coeff):
     """Ri-sintetizza il segnale usando seni e coseni."""
-    # coefficienti con modulo maggiore di una soglia
+    # prendo coefficienti con modulo minori di una soglia
     soglia = 1e-6
     print(f"FFT originale: {len(fft_coeff)} coefficienti")
     fft_coeff_filtrati = fft_coeff[np.abs(fft_coeff) > soglia]
     print(f"Numero di coefficienti non nulli: {len(fft_coeff_filtrati)}")
-
+    
     # Ri-sintetizza il segnale
     t_index = len(fft_coeff)
     segnale = np.zeros(t_index)
