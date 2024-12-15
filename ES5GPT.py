@@ -111,8 +111,8 @@ def risintetizzaSeniCoseni(fft_coeff):
             somma += (
                 np.real(coeff) * np.cos(2 * np.pi * k * t / t_index)
                 - np.imag(coeff) * np.sin(2 * np.pi * k * t / t_index)
-            ) / t_index
-        segnale[t] = somma
+            )
+        segnale[t] = somma / t_index
     return segnale
 
 def mascheraRumore(fft_coeff, potenza, soglia=1e-6):
