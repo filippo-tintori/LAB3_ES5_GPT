@@ -28,7 +28,6 @@ parteB = [
 ]
 
 # funz
-
 def apriAudio(nome_file):
     """Apre un file audio e restituisce la frequenza di campionamento e i dati."""
     if nome_file.endswith(".wav"):
@@ -104,7 +103,7 @@ def risintetizzaSeniCoseni(fft_coeff):
     print(f"Numero di coefficienti non nulli: {len(fft_coeff_filtrati)}")
     
     # Ri-sintetizza il segnale
-    t_index = len(fft_coeff)
+    t_index = len(fft_coeff_filtrati)
     segnale = np.zeros(t_index)
     for t in tqdm(range(t_index)):
         somma = 0
@@ -119,7 +118,7 @@ def risintetizzaSeniCoseni(fft_coeff):
 def mascheraRumore(fft_coeff, potenza, soglia=1e-6):
     """Maschera il rumore ponendo a zero i coefficienti con potenza minima."""
     fft_coeff_filtrati = fft_coeff.copy()
-    fft_coeff_filtrati[np.abs(fft_coeff_filtrati) < soglia] = 0
+    fft_coeff_filtrati[np.abs(fft_coeff_filtrati**2) < soglia] = 0
     return fft_coeff_filtrati
 
 # def funz di main
@@ -127,7 +126,7 @@ def mascheraRumore(fft_coeff, potenza, soglia=1e-6):
 def esercitazioneA():
     print("Esercitazione A: ") # da fare
     file = parteA[0]
-    a,b = apriAudio(file)
+    a, b = apriAudio(file)
     plottaWaveform(a,b)
     c, d = fftSegnale(b)
     plottaFFT(c,d)
