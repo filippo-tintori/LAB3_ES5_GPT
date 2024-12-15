@@ -105,6 +105,7 @@ def risintetizzaSegnale(fft_coeff):
 
 def risintetizzaSeniCoseni(fft_coeff):
     """Ri-sintetizza il segnale usando seni e coseni."""
+    fft_coeff_filtrati = mascheraRumore(fft_coeff)
     
     # Ri-sintetizza il segnale
     t_index = len(fft_coeff_filtrati)
