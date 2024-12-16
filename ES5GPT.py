@@ -1,6 +1,5 @@
 import argparse
 import numpy as np
-import sounddevice as sd
 import matplotlib.pyplot as plt
 import scipy.io.wavfile as wav
 from scipy.signal import find_peaks
@@ -8,6 +7,7 @@ from tqdm import tqdm
 import soundcard as sd
 #import soundfile # NON SERVE
 import pandas as pd
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes, mark_inset
 
 # Link utili - URL GLOBALI
 parteA = [
@@ -106,15 +106,16 @@ def mascheraRumore(fft_coeff, indice):
     picchi = potenza[indiciPicchi]
     print(f"Picchi trovati: {picchi}")
     
+    fft_coeff_filtrati = np.zeros_like(fft_coeff) 
+    
     # scelta per ogni file
     if indice == 0:
         piccoScelto = indiciPicchi[np.argmin(potenza[indiciPicchi])] # min = preservo il picco con potenza minore
     if indice == 1:
-        piccoScelto = indiciPicchi[13] # valore che volgio togliere
+        piccoScelto = indiciPicchi[13] # valore che voglio togliere
     if indice == 2:
         pass
     
-    fft_coeff_filtrati = np.zeros_like(fft_coeff) # faccio un like per velocità di scrittura e effic.
     
     # integro le medifiche in base al file che si sta analizzando
     if indice == 0:
@@ -161,15 +162,31 @@ def risintetizzaSeniCoseni(fft_coeff):
     return segnale
 
 def plottaRisintonizzata(dati_originali, dati_filtrati):
-    """Plotta il confronto tra segnale originale e filtrato."""
+    """Plotta il confronto tra segnale originale e filtrato con zoom su un'area."""
     tempo = dati_originali[:, 0]
-    plt.plot(tempo, dati_originali[:, 1], label="Originale")
-    plt.plot(tempo, dati_filtrati, label="Filtrato", alpha=0.7)
-    plt.xlabel("Tempo (s)")
-    plt.ylabel("Ampiezza (u.a.)")
-    plt.title("Confronto tra segnale originale e filtrato")
-    plt.xlim(0.1,0.2)
-    plt.legend()
+    
+    # Creazione della figura principale
+    fig, ax = plt.subplots(figsize=(8, 6))
+    ax.plot(tempo, dati_originali[:, 1], label="Originale", color="dodgerblue")
+    ax.plot(tempo, dati_filtrati, label="Filtrato", alpha=0.7, color="coral")
+    
+    # Etichette e titolo
+    ax.set_xlabel("Tempo (s)")
+    ax.set_ylabel("Ampiezza (u.a.)")
+    ax.set_title("Confronto tra segnale originale e filtrato")
+    ax.legend()
+    
+    # Aggiunta dello zoom
+    axins = inset_axes(ax, width="30%", height="30%", loc='upper left', borderpad=1)
+    
+    # Zoomare sull'intervallo x da 0.1 a 0.2
+    axins.plot(tempo, dati_originali[:, 1], label="Originale")
+    axins.plot(tempo, dati_filtrati, label="Filtrato", alpha=0.7)
+    
+    # Impostazioni dell'area zoomata
+    axins.set_xlim(0.1, 0.2)
+    axins.set_ylim(min(dati_originali[:, 1]), max(dati_originali[:, 1]))
+    
     plt.show()
 
 def esercitazioneA():
