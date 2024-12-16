@@ -1,7 +1,9 @@
-LAB3_ES5_GPT
+ReadMe di LAB3_ES5_GPT
 
-Modifiche da fare:
--
+C'è qualcosa che non va sulla parte reale
+Controllare la funzione seni, cazzi e coseni
 
-Commenti:
-.
+Ve voglio bene,
+Adios
+
+Filippo Tintori

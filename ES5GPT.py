@@ -9,7 +9,21 @@ import soundcard as sd
 import pandas as pd
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes, mark_inset
 
-# Link utili - URL GLOBALI
+# imposto parametri di stampa 
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.family": "serif",
+    "font.serif": ["Latin Modern Roman"],
+    "font.size": 12,  # font
+    "axes.titlesize": 14,  # titolo degli assi
+    "axes.labelsize": 12,  # etichette degli assi
+    "xtick.labelsize": 10,  # etichette degli assi x
+    "ytick.labelsize": 10,  # etichette degli assi y
+})
+
+##############################
+#  LINK UTILI - URL GLOBALI  #
+##############################
 parteA = [
     "https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/data1.txt",
     "https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/data2.txt",
@@ -29,6 +43,10 @@ parteB = [
     ["https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/primo.wav",
     "https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/secondo.wav"]
 ]
+
+##############################
+#           AUDIO            #
+##############################
 
 def apriAudio(nome_file):
     """Apre un file audio e restituisce la frequenza di campionamento e i dati."""
@@ -56,6 +74,10 @@ def ascoltaAudio(nome_file):
         print("Riproduzione completata.")
     except Exception as e:
         print(f"Errore durante la riproduzione dell'audio: {e}")
+        
+##############################
+#           GRAFICI          #
+##############################
 
 def GraficoDiffOriginaleFiltrato(coefficienti_originali, coefficienti_filtrati, frequenza_campionamento): # NON PROVATA - VERIFICARE VALIDITÀ
     """
@@ -90,7 +112,7 @@ def plottaWaveform(dati):
     """Plotta la waveform di un file audio."""
     plt.plot(dati[:, 0], dati[:, 1])
     plt.xlabel("Tempo (s)")
-    plt.ylabel("Ampiezza")
+    plt.ylabel("Ampiezza (u.a.)")
     plt.title("Waveform")
     plt.show()
 
@@ -109,24 +131,26 @@ def plottaFFT(fft_coeff, potenza):
     plt.plot(freq[:len(fft_coeff)//2], potenza[:len(fft_coeff)//2])
     plt.title("Potenza")
     plt.xlabel("Frequenza (Hz)")
-    plt.ylabel("Potenza")
+    plt.ylabel("Potenza (u.a.)")
 
     plt.subplot(3, 1, 2)
     plt.plot(freq[:len(fft_coeff)//2], np.real(fft_coeff[:len(fft_coeff)//2]))
     plt.title("Parte Reale")
     plt.xlabel("Frequenza (Hz)")
-    plt.ylabel("Ampiezza")
+    plt.ylabel("Ampiezza (u.a.)")
 
     plt.subplot(3, 1, 3)
     plt.plot(freq[:len(fft_coeff)//2], np.imag(fft_coeff[:len(fft_coeff)//2]))
     plt.title("Parte Immaginaria")
     plt.xlabel("Frequenza (Hz)")
-    plt.ylabel("Ampiezza")
+    plt.ylabel("Ampiezza (u.a.)")
 
     plt.tight_layout()
     plt.show()
 
-# per parte A
+##############################
+#      MASCHERA RUMORE       #
+##############################
 def mascheraRumore(fft_coeff, indice):
     """Rimuove i coefficienti che portano rumore."""
     potenza = np.abs(fft_coeff) ** 2
@@ -140,22 +164,20 @@ def mascheraRumore(fft_coeff, indice):
     # scelta per ogni file
     if indice == 0:
         piccoScelto = indiciPicchi[np.argmin(potenza[indiciPicchi])] # min = preservo il picco con potenza minore
-    if indice == 1:
-        piccoScelto = indiciPicchi[13] # valore che voglio togliere
-    if indice == 2:
-        pass
-    
-    
-    # integro le medifiche in base al file che si sta analizzando
-    if indice == 0:
         fft_coeff_filtrati[piccoScelto] = fft_coeff[piccoScelto] # azzero altri 
     if indice == 1:
+        piccoScelto = indiciPicchi[13] # valore che voglio togliere
         fft_coeff_filtrati[piccoScelto] = 0 # azzero questo
     if indice == 2:
-        pass
+        piccoScelto = indiciPicchi[np.argmin(potenza[indiciPicchi])] # min = preservo il picco con potenza minore
+        fft_coeff_filtrati[piccoScelto] = fft_coeff[piccoScelto] # azzero altri 
     return fft_coeff_filtrati
 
 # migliorare il tempo di esecuzione del programma - per ora neglio ordini dei min. ___> integrare scipy
+
+##############################
+#       RISINTETIZZA         #
+##############################
 
 def risintetizzaSegnale(fft_coeff):
     """Ri-sintetizza il segnale usando la FFT inversa."""
@@ -179,7 +201,7 @@ def risintetizzaSeniCoseni(fft_coeff):
         somma = 0
         for _, row in df_filtrato.iterrows():
             k = row['indice']
-            if k >= len(df_filtrato)//2-1:
+            if k >= len(df_filtrato):
                 break
             coeff_reale = row['coeff_reale']
             coeff_immaginario = row['coeff_immaginario']
@@ -189,6 +211,8 @@ def risintetizzaSeniCoseni(fft_coeff):
             )
         segnale[t] = somma / t_index
     return segnale
+
+
 
 def plottaRisintonizzata(dati_originali, dati_filtrati):
     """Plotta il confronto tra segnale originale e filtrato con zoom su un'area."""
@@ -203,10 +227,10 @@ def plottaRisintonizzata(dati_originali, dati_filtrati):
     ax.set_xlabel("Tempo (s)")
     ax.set_ylabel("Ampiezza (u.a.)")
     ax.set_title("Confronto tra segnale originale e filtrato")
-    ax.legend()
+    ax.legend(loc="upper left")
     
     # Aggiunta dello zoom
-    axins = inset_axes(ax, width="30%", height="30%", loc='upper left', borderpad=1)
+    axins = inset_axes(ax, width="30%", height="30%", loc='upper right', borderpad=1)
     
     # Zoomare sull'intervallo x da 0.1 a 0.2
     axins.plot(tempo, dati_originali[:, 1], label="Originale")
@@ -218,23 +242,34 @@ def plottaRisintonizzata(dati_originali, dati_filtrati):
     
     plt.show()
 
-def esercitazioneA():
-    for index, file in enumerate(parteA):
-        print(f"Elaborazione del file: {file}")
-        freq_camp, dati = apriAudio(file)
-        plottaWaveform(dati)
-        
-        fft_coeff, potenza = fftSegnale(dati)
-        plottaFFT(fft_coeff, potenza)
-        #soglia = np.mean(potenza)
-        #print(soglia)
-        fft_filtrato = mascheraRumore(fft_coeff, index)
 
-        segnale_fft = risintetizzaSegnale(fft_filtrato)
-        segnale_seni_coseni = risintetizzaSeniCoseni(fft_filtrato)
 
-        plottaRisintonizzata(dati, segnale_fft)
-        plottaRisintonizzata(dati, segnale_seni_coseni)
+##############################
+#      ESERCITAZIONE A        #
+##############################
+
+def esercitazioneA(parte):
+    index = int(parte)
+    file = parteA[index]
+    print(f"Elaborazione del file: {file}")
+    
+    freq_camp, dati = apriAudio(file)
+    plottaWaveform(dati)
+    
+    fft_coeff, potenza = fftSegnale(dati)
+    plottaFFT(fft_coeff, potenza)
+    
+    fft_filtrato = mascheraRumore(fft_coeff, index)
+    
+    segnale_fft = risintetizzaSegnale(fft_filtrato)
+    segnale_seni_coseni = risintetizzaSeniCoseni(fft_filtrato)
+
+    plottaRisintonizzata(dati, segnale_fft) # ifft
+    plottaRisintonizzata(dati, segnale_seni_coseni) #seni e coseni
+
+##############################
+#      ESERCITAZIONE B       #
+##############################
 
 def esercitazioneB(parte):
     if parte == "1":
@@ -252,15 +287,23 @@ def esercitazioneB(parte):
         print("Segnale filtrato sintetizzato usando FFT inversa.")
     else:
         print("Parte non riconosciuta.")
+        
+##############################
+#             MAIN           #
+##############################
 
 def main():
     parser = argparse.ArgumentParser(description="Esercitazioni audio.")
     parser.add_argument("esercitazione", choices=["A", "B"], help="Seleziona l'esercitazione.")
-    parser.add_argument("parte", nargs="?", help="Seleziona la parte dell'esercitazione (solo per B).")
+    parser.add_argument("parte", nargs="?", help="Seleziona la parte dell'esercitazione.")
     args = parser.parse_args()
 
     if args.esercitazione == "A":
-        esercitazioneA()
+        if args.parte:
+            esercitazioneA(args.parte)
+        else:
+            print("Per l'esercitazione A, specificare una parte (1, 2 o 3).")
+
     elif args.esercitazione == "B":
         if args.parte:
             esercitazioneB(args.parte)
