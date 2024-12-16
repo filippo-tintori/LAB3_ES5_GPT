@@ -97,7 +97,7 @@ def mascheraRumore(fft_coeff, indice):
     if indice == 0:
         piccoScelto = indiciPicchi[np.argmin(potenza[indiciPicchi])] # min = preservo il picco con potenza minore
     if indice == 1:
-        piccoScelto = indiciPicchi[np.argmin(potenza[indiciPicchi])] # min = preservo il picco con potenza minore
+        piccoScelto = indiciPicchi[-1] # min = preservo il picco con potenza minore
     if indice == 2:
         pass
     
@@ -127,7 +127,7 @@ def risintetizzaSeniCoseni(fft_coeff):
 
     for t in tqdm(range(t_index)):
         somma = 0
-        for _, row in df_filtrato.iterrows():
+        for _, row in df_filtrato.iterrows()//2-1:
             k = row['indice']
             coeff_reale = row['coeff_reale']
             coeff_immaginario = row['coeff_immaginario']
