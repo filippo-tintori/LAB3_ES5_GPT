@@ -1,5 +1,6 @@
 import argparse
 import numpy as np
+import sounddevice as sd
 import matplotlib.pyplot as plt
 import scipy.io.wavfile as wav
 from scipy.signal import find_peaks
@@ -42,7 +43,19 @@ def apriAudio(nome_file):
     return freq_camp, dati
 
 def ascoltaAudio(nome_file):
-    pass
+    """Apre e riproduce un file audio utilizzando soundcard."""
+    try:
+        freq_camp, dati = apriAudio(nome_file)
+        print(f"Riproduzione del file '{nome_file}' con frequenza di campionamento {freq_camp} Hz.")
+        
+        # Seleziona la scheda audio predefinita per la riproduzione
+        scheda_audio = sc.default_output_device()
+        
+        # Riproduce l'audio
+        scheda_audio.play(dati, samplerate=freq_camp)
+        print("Riproduzione completata.")
+    except Exception as e:
+        print(f"Errore durante la riproduzione dell'audio: {e}")
 
 def plottaWaveform(dati):
     """Plotta la waveform di un file audio."""
@@ -86,12 +99,12 @@ def plottaFFT(fft_coeff, potenza):
 
 # per parte A
 def mascheraRumore(fft_coeff, indice):
-    """Rimuove i coefficienti che portano rumore rumore."""
+    """Rimuove i coefficienti che portano rumore."""
     potenza = np.abs(fft_coeff) ** 2
     #fft_coeff_filtrati = np.where(potenza > soglia, fft_coeff, 0)
     indiciPicchi, _ = find_peaks(potenza, height=1e8)
     picchi = potenza[indiciPicchi]
-    print(picchi)
+    print(f"Picchi trovati: {picchi}")
     
     # scelta per ogni file
     if indice == 0:
