@@ -245,7 +245,7 @@ def plottaRisintonizzata(dati_originali, dati_filtrati):
 
 
 ##############################
-#      ESERCITAZIONE A        #
+#      ESERCITAZIONE A       #
 ##############################
 
 def esercitazioneA(parte):
