@@ -84,13 +84,23 @@ def plottaFFT(fft_coeff, potenza):
     plt.tight_layout()
     plt.show()
 
-def mascheraRumore(fft_coeff, soglia):
-    """Rimuove i coefficienti con potenza sotto una soglia."""
+# per parte A
+def mascheraRumore(fft_coeff, indice):
+    """Rimuove i coefficienti che portano rumore rumore."""
     potenza = np.abs(fft_coeff) ** 2
     #fft_coeff_filtrati = np.where(potenza > soglia, fft_coeff, 0)
     indiciPicchi, _ = find_peaks(potenza, height=1e8)
     picchi = potenza[indiciPicchi]
-    piccoScelto = indiciPicchi[np.argmin(potenza[indiciPicchi])] # min = preservo il picco con potenza minore
+    print(picchi)
+    # metto scelta
+    
+    if indice == 0:
+        piccoScelto = indiciPicchi[np.argmin(potenza[indiciPicchi])] # min = preservo il picco con potenza minore
+    if indice == 1:
+        piccoScelto = indiciPicchi[np.argmin(potenza[indiciPicchi])] # min = preservo il picco con potenza minore
+    if indice == 2:
+        pass
+    
     fft_coeff_filtrati = np.zeros_like(fft_coeff) # faccio un like per velocità di scrittura e effic.
     fft_coeff_filtrati[piccoScelto] = fft_coeff[piccoScelto]
     return fft_coeff_filtrati
@@ -134,24 +144,23 @@ def plottaRisintonizzata(dati_originali, dati_filtrati):
     plt.plot(tempo, dati_originali[:, 1], label="Originale")
     plt.plot(tempo, dati_filtrati, label="Filtrato", alpha=0.7)
     plt.xlabel("Tempo (s)")
-    plt.ylabel("Ampiezza")
+    plt.ylabel("Ampiezza (u.a.)")
     plt.title("Confronto tra segnale originale e filtrato")
-    plt.xlim(0.1,0.15)
+    plt.xlim(0.1,0.2)
     plt.legend()
     plt.show()
 
 def esercitazioneA():
-    for file in parteA:
+    for index, file in enumerate(parteA):
         print(f"Elaborazione del file: {file}")
         freq_camp, dati = apriAudio(file)
         plottaWaveform(dati)
         
         fft_coeff, potenza = fftSegnale(dati)
         plottaFFT(fft_coeff, potenza)
-
-        soglia = np.mean(potenza)
+        #soglia = np.mean(potenza)
         #print(soglia)
-        fft_filtrato = mascheraRumore(fft_coeff, soglia)
+        fft_filtrato = mascheraRumore(fft_coeff, index)
 
         segnale_fft = risintetizzaSegnale(fft_filtrato)
         segnale_seni_coseni = risintetizzaSeniCoseni(fft_filtrato)
