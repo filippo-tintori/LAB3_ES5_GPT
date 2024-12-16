@@ -2,7 +2,9 @@ import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.io.wavfile as wav
+from scipy.signal import find_peaks
 from tqdm import tqdm
+import soundcard as sd
 #import soundfile # NON SERVE
 import pandas as pd
 
@@ -38,6 +40,9 @@ def apriAudio(nome_file):
         raise ValueError("Formato di file non supportato. Usa .wav o .txt.")
     print("File aperto e utilizzabile.")
     return freq_camp, dati
+
+def ascoltaAudio(nome_file):
+    pass
 
 def plottaWaveform(dati):
     """Plotta la waveform di un file audio."""
@@ -82,8 +87,15 @@ def plottaFFT(fft_coeff, potenza):
 def mascheraRumore(fft_coeff, soglia):
     """Rimuove i coefficienti con potenza sotto una soglia."""
     potenza = np.abs(fft_coeff) ** 2
-    fft_coeff_filtrati = np.where(potenza > soglia, fft_coeff, 0)
+    #fft_coeff_filtrati = np.where(potenza > soglia, fft_coeff, 0)
+    indiciPicchi, _ = find_peaks(potenza, height=1e8)
+    picchi = potenza[indiciPicchi]
+    piccoScelto = indiciPicchi[np.argmin(potenza[indiciPicchi])] # min = preservo il picco con potenza minore
+    fft_coeff_filtrati = np.zeros_like(fft_coeff) # faccio un like per velocità di scrittura e effic.
+    fft_coeff_filtrati[piccoScelto] = fft_coeff[piccoScelto]
     return fft_coeff_filtrati
+
+# migliorare il tempo di esecuzione del programma - per ora neglio ordini dei min. ___> integrare scipy
 
 def risintetizzaSegnale(fft_coeff):
     """Ri-sintetizza il segnale usando la FFT inversa."""
@@ -101,7 +113,7 @@ def risintetizzaSeniCoseni(fft_coeff):
         'coeff_immaginario': np.imag(fft_coeff),
         'potenza': np.abs(fft_coeff) ** 2
     })
-    df_filtrato = df[df['potenza'] > 0]  # no coeff nulli
+    df_filtrato = df[df['potenza'] > 0]
 
     for t in tqdm(range(t_index)):
         somma = 0
@@ -124,6 +136,7 @@ def plottaRisintonizzata(dati_originali, dati_filtrati):
     plt.xlabel("Tempo (s)")
     plt.ylabel("Ampiezza")
     plt.title("Confronto tra segnale originale e filtrato")
+    plt.xlim(0.1,0.15)
     plt.legend()
     plt.show()
 
@@ -137,7 +150,7 @@ def esercitazioneA():
         plottaFFT(fft_coeff, potenza)
 
         soglia = np.mean(potenza)
-        print(soglia)
+        #print(soglia)
         fft_filtrato = mascheraRumore(fft_coeff, soglia)
 
         segnale_fft = risintetizzaSegnale(fft_filtrato)
