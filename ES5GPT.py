@@ -92,17 +92,24 @@ def mascheraRumore(fft_coeff, indice):
     indiciPicchi, _ = find_peaks(potenza, height=1e8)
     picchi = potenza[indiciPicchi]
     print(picchi)
-    # metto scelta
     
+    # scelta per ogni file
     if indice == 0:
         piccoScelto = indiciPicchi[np.argmin(potenza[indiciPicchi])] # min = preservo il picco con potenza minore
     if indice == 1:
-        piccoScelto = indiciPicchi[-1] # min = preservo il picco con potenza minore
+        piccoScelto = indiciPicchi[13] # valore che volgio togliere
     if indice == 2:
         pass
     
     fft_coeff_filtrati = np.zeros_like(fft_coeff) # faccio un like per velocità di scrittura e effic.
-    fft_coeff_filtrati[piccoScelto] = fft_coeff[piccoScelto]
+    
+    # integro le medifiche in base al file che si sta analizzando
+    if indice == 0:
+        fft_coeff_filtrati[piccoScelto] = fft_coeff[piccoScelto] # azzero altri 
+    if indice == 1:
+        fft_coeff_filtrati[piccoScelto] = 0 # azzero questo
+    if indice == 2:
+        pass
     return fft_coeff_filtrati
 
 # migliorare il tempo di esecuzione del programma - per ora neglio ordini dei min. ___> integrare scipy
@@ -124,11 +131,13 @@ def risintetizzaSeniCoseni(fft_coeff):
         'potenza': np.abs(fft_coeff) ** 2
     })
     df_filtrato = df[df['potenza'] > 0]
-
+    
     for t in tqdm(range(t_index)):
         somma = 0
-        for _, row in df_filtrato.iterrows()//2-1:
+        for _, row in df_filtrato.iterrows():
             k = row['indice']
+            if k >= len(df_filtrato)//2-1:
+                break
             coeff_reale = row['coeff_reale']
             coeff_immaginario = row['coeff_immaginario']
             somma += (
@@ -167,7 +176,7 @@ def esercitazioneA():
 
         plottaRisintonizzata(dati, segnale_fft)
         plottaRisintonizzata(dati, segnale_seni_coseni)
-        
+
 def esercitazioneB(parte):
     if parte == "1":
         freq_camp, dati = apriAudio("audio.wav")
