@@ -57,6 +57,35 @@ def ascoltaAudio(nome_file):
     except Exception as e:
         print(f"Errore durante la riproduzione dell'audio: {e}")
 
+def GraficoDiffOriginaleFiltrato(coefficienti_originali, coefficienti_filtrati, frequenza_campionamento): # NON PROVATA - VERIFICARE VALIDITÀ
+    """
+    Visualizza le frequenze mantenute (verdi) e rimosse (rosse) dopo il filtraggio.
+
+    Parametri:
+    - coefficienti_originali: Array con i coefficienti di Fourier originali.
+    - coefficienti_filtrati: Array con i coefficienti di Fourier filtrati.
+    - frequenza_campionamento: Frequenza di campionamento del segnale.
+    """
+    n = len(coefficienti_originali)
+    frequenze = np.fft.fftfreq(n, d=1/frequenza_campionamento)
+
+    potenza_originale = np.abs(coefficienti_originali)**2
+    potenza_filtrata = np.abs(coefficienti_filtrati)**2
+
+    mantenute = np.where(potenza_filtrata > 0)[0]
+    rimosse = np.where(potenza_filtrata == 0)[0]
+
+    plt.figure(figsize=(10, 6))
+    plt.title("Frequenze usate")
+    plt.scatter(frequenze[mantenute], potenza_originale[mantenute], color='green', label='Frequenze mantenute', s=10)
+    plt.scatter(frequenze[rimosse], potenza_originale[rimosse], color='red', label='Frequenze di rumore', s=10)
+
+    plt.xlabel("f (Hz)")
+    plt.ylabel("Potenza (u.a.)")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
 def plottaWaveform(dati):
     """Plotta la waveform di un file audio."""
     plt.plot(dati[:, 0], dati[:, 1])
