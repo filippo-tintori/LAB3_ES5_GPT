@@ -189,7 +189,7 @@ def zoomPicchi(potenza):
 def zoomPicchiFrequenza(potenza):
     picchiTrovati, _ = find_peaks(potenza, height=1e14)
     picchiTrovati = picchiTrovati[:len(picchiTrovati)//2-1]
-    
+    pot= potenza[picchiTrovati]
     picchiTrovati = [IndiceAfreq(potenza, picchi) for picchi in picchiTrovati] # conversione
 
     num_picchi = len(picchiTrovati)
@@ -206,10 +206,8 @@ def zoomPicchiFrequenza(potenza):
     ax = ax.flatten()
     
     for i, picco in tqdm(enumerate(picchiTrovati)):
-        start = int(max(0, picco - 50) ) # Imposta il margine sinistro
-        end = int(min(len(potenza), picco + 50))  # Imposta il margine destro
         # Traccia il grafico zoomato per ogni picco
-        ax[i].plot(np.arange(start, end), potenza[start:end])
+        ax[i].plot(picchiTrovati[i], pot[i])
         ax[i].set_title(f"Zoom Picco {i + 1} (Posizione {picco})")
         ax[i].set_xlabel("Frequenza (Hz)")
         ax[i].set_ylabel("Potenza (u.a.)")
