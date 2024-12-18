@@ -185,8 +185,61 @@ def zoomPicchi(potenza):
     plt.tight_layout()
     plt.show()
 
+def zoomPicchiFrequenza(potenza, frequenza_campionamento=44100, zoom_range=50):
+    """
+    Zoom sui picchi della potenza con i grafici dei primi picchi messi uno accanto all'altro.
+    
+    Args:
+        potenza (array): Spettro di potenza.
+        frequenza_campionamento (int): Frequenza di campionamento (Hz). Default 44100 Hz.
+        zoom_range (int): Numero di punti da considerare attorno al picco per lo zoom.
+    """
+    # Calcolo le frequenze
+    frequenze = np.fft.fftfreq(len(potenza), d=1/frequenza_campionamento)
+    
+    # Trovo i picchi
+    peaks, _ = find_peaks(potenza, height=1e14)  # Soglia minima per i picchi
+    freq_peaks = frequenze[peaks]
+    potenza_peaks = potenza[peaks]
 
-def zoomPicchiFrequenza(potenza):
+    # Considera solo la prima metà dei picchi
+    num_picchi = len(peaks)
+    if num_picchi == 0:
+        print("Nessun picco rilevato!")
+        return
+
+    metà_picchi = (num_picchi + 1) // 2 # tolgo i coeff negativi
+    peaks = peaks[:metà_picchi]
+    freq_peaks = freq_peaks[:metà_picchi]
+    potenza_peaks = potenza_peaks[:metà_picchi]
+
+    # Creazione del grafico
+    fig, axs = plt.subplots(1, metà_picchi, figsize=(5 * metà_picchi, 5), constrained_layout=True)
+
+    if metà_picchi == 1:
+        axs = [axs]
+
+    for i, peak_idx in enumerate(peaks):
+        # Definizione dei limiti dello zoom
+        start = max(0, peak_idx - zoom_range)
+        end = min(len(potenza), peak_idx + zoom_range)
+        
+        # Plot per ogni picco
+        axs[i].plot(frequenze[start:end], potenza[start:end], label="Zoom", color="royalblue")
+        axs[i].scatter([freq_peaks[i]], [potenza_peaks[i]], color='red', label='Picco')
+        axs[i].set_title(f"Picco a {freq_peaks[i]:.2f} Hz")
+        axs[i].set_xlabel("Frequenza (Hz)")
+        axs[i].set_ylabel("Potenza")
+        axs[i].legend()
+        axs[i].grid(True)
+
+    # Mostra il grafico
+    plt.suptitle("Zoom sui Picchi della Potenza (Prima metà)")
+    plt.show()
+
+
+
+"""def zoomPicchiFrequenza(potenza):
     picchiTrovati, _ = find_peaks(potenza, height=1e14)
     picchiTrovati = picchiTrovati[:len(picchiTrovati)//2-1]
     pot= potenza[picchiTrovati]
@@ -208,7 +261,7 @@ def zoomPicchiFrequenza(potenza):
     for i, picco in tqdm(enumerate(picchiTrovati)):
         # Traccia il grafico zoomato per ogni picco
         ax[i].plot(picchiTrovati[i], pot[i])
-        ax[i].set_title(f"Zoom Picco {i + 1} (Posizione {picco})")
+        ax[i].set_title(f"Zoom Picco {i + 1} (Posizione {np.round(picco, 2)} (Hz))")
         ax[i].set_xlabel("Frequenza (Hz)")
         ax[i].set_ylabel("Potenza (u.a.)")
         ax[i].grid()
@@ -218,7 +271,7 @@ def zoomPicchiFrequenza(potenza):
         fig.delaxes(ax[j])
 
     plt.tight_layout()
-    plt.show()
+    plt.show()"""
 
 
 def salvaCanale(dati, frequenza_campionamento, file_output):
