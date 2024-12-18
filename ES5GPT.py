@@ -124,9 +124,9 @@ def GraficoDiffOriginaleFiltrato(coefficienti_originali, coefficienti_filtrati, 
     Visualizza le frequenze mantenute (verdi) e rimosse (rosse) dopo il filtraggio.
 
     Parametri:
-    - coefficienti_originali: Array con i coefficienti di Fourier originali.
-    - coefficienti_filtrati: Array con i coefficienti di Fourier filtrati.
-    - frequenza_campionamento: Frequenza di campionamento del segnale.
+    - coefficienti_originali: np.Array con i coefficienti di Fourier originali.
+    - coefficienti_filtrati: np.Array con i coefficienti di Fourier filtrati.
+    - frequenza_campionamento: Frequenza di campionamento.
     """
     n = len(coefficienti_originali)
     frequenze = np.fft.fftfreq(n, d=1/frequenza_campionamento)
@@ -157,6 +157,7 @@ def plottaWaveform(dati):
     plt.show()
     
 def plottaWAV(canale):
+    """Plotta un file "*.wav"."""
     freqcamp = 44100
     durata = len(canale) / freqcamp  # Durata in secondi
     tempo = np.linspace(0, durata, len(canale))
@@ -169,11 +170,13 @@ def plottaWAV(canale):
     plt.show()
 
 def IndiceAfreq(potenza, indice):
+    """Converte l'indice in potenza."""
     f= np.fft.fftfreq(len(potenza),d=1/44100)
     freqi=f[indice]
     return freqi
 
 def zoomPicchi(potenza):
+    """Plotta gli zoom dei picchi in un grafico (indici, potenza)."""
     picchiTrovati, _ = find_peaks(potenza, height=1e14)
     picchiTrovati=picchiTrovati[:len(picchiTrovati)//2-1]
 
@@ -224,13 +227,13 @@ def zoomPicchiFrequenza(potenza, frequenza_campionamento=44100, zoom_range=50):
     freq_peaks = frequenze[peaks]
     potenza_peaks = potenza[peaks]
 
-    # Considera solo la prima metà dei picchi
+
     num_picchi = len(peaks)
     if num_picchi == 0:
         print("Nessun picco rilevato!")
         return
 
-    metà_picchi = (num_picchi + 1) // 2 # tolgo i coeff negativi
+    metà_picchi = (num_picchi + 1) // 2    # Considera solo la prima metà dei picchi
     peaks = peaks[:metà_picchi]
     freq_peaks = freq_peaks[:metà_picchi]
     potenza_peaks = potenza_peaks[:metà_picchi]
@@ -261,19 +264,20 @@ def zoomPicchiFrequenza(potenza, frequenza_campionamento=44100, zoom_range=50):
 
 
 def salvaCanale(dati, frequenza_campionamento, file_output):
+    """Salva un file .wav in locale."""
     wav.write(file_output, frequenza_campionamento, dati)
 
 ##############################
 #            FFT             #
 ##############################
 
-def fftSegnale(dati):
+def fftSegnale(dati): # per es A
     """Calcola la FFT del segnale."""
     fft_coeff = np.fft.fft(dati[:,1])
     potenza = np.abs(fft_coeff) ** 2
     return fft_coeff, potenza 
    
-def fftSegnaleB1(dati):
+def fftSegnaleB1(dati): # per es B1
     """Calcola la FFT del segnale."""
     fft_coeff = np.fft.fft(dati)
     potenza = np.abs(fft_coeff) ** 2
@@ -490,6 +494,13 @@ def plottaRisintonizzataB(dati_originali, dati_filtrati, index):
     
     plt.show()
 
+
+
+
+
+
+
+
 ##############################
 #      ESERCITAZIONE A       #
 ##############################
@@ -582,7 +593,8 @@ def esercitazioneB1(parte):
     else:
         print("Parte non riconosciuta.")
         print("Parti disponibili: 1, 2, 3, 4, 5")
-        
+
+
         
 ##############################
 #      ESERCITAZIONE B2      #
@@ -605,6 +617,7 @@ def esercitazioneB2(parte):
         print("Parte non riconosciuta.")
 
 
+
 ##############################
 #      ESERCITAZIONE B3      #
 ##############################
@@ -624,7 +637,11 @@ def esercitazioneB3(parte):
 
     else:
         print("Parte non riconosciuta.")
-        
+
+
+
+
+ 
 ##############################
 #             MAIN           #
 ##############################
@@ -656,7 +673,6 @@ def main():
             esercitazioneB3(args.parte)
         else:
             print("Per l'esercitazione B, specificare una parte (1 o 2).")
-
 
 if __name__ == "__main__":
     main()
