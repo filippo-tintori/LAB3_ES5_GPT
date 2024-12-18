@@ -150,7 +150,6 @@ def IndiceAfreq(potenza, indice):
     f= np.fft.fftfreq(len(potenza),d=1/44100)
     freqi=f[indice]
     return freqi
-    
 
 def zoomPicchi(potenza):
     picchiTrovati, _ = find_peaks(potenza, height=1e14)
