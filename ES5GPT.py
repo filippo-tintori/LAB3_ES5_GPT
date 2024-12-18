@@ -92,6 +92,28 @@ def ascoltaAudio(nome_file):
         print("Riproduzione completata.")
     except Exception as e:
         print(f"Errore durante la riproduzione dell'audio: {e}")
+
+
+def riascoltaSegnale(segnale, frequenza_campionamento=44100):
+    """
+    Riproduce il segnale risintetizzato utilizzando la libreria soundcard.
+    
+    Args:
+        segnale (array): Il segnale da riprodurre.
+        frequenza_campionamento (int): La frequenza di campionamento in Hz.
+    """
+    # Normalizza il segnale per evitare clipping
+    segnale_normalizzato = segnale / max(abs(segnale))
+    
+    # Ottieni il dispositivo di uscita audio predefinito
+    speaker = sc.default_speaker()
+    
+    print("Riproduzione del segnale risintetizzato...")
+    try:
+        # Riproduce il segnale
+        speaker.play(segnale_normalizzato, samplerate=frequenza_campionamento)
+    except Exception as e:
+        print(f"Errore durante la riproduzione del segnale: {e}")
         
 ##############################
 #           GRAFICI          #
@@ -240,7 +262,11 @@ def zoomPicchiFrequenza(potenza, frequenza_campionamento=44100, zoom_range=50):
 
 def salvaCanale(dati, frequenza_campionamento, file_output):
     wav.write(file_output, frequenza_campionamento, dati)
-    
+
+##############################
+#            FFT             #
+##############################
+
 def fftSegnale(dati):
     """Calcola la FFT del segnale."""
     fft_coeff = np.fft.fft(dati[:,1])
@@ -316,9 +342,17 @@ def mascheraRumore(fft_coeff, indice):
 
 def mascheraRumoreB(fft_coeff, indice):
     """Rimuove i coefficienti che portano rumore."""
+    if indice == 1:
+        alto = 1e15
+    if indice == 2:
+        alto = 0
+    if indice == 3:
+        alto = 0
+    
+    
     potenza = np.abs(fft_coeff) ** 2
     #fft_coeff_filtrati = np.where(potenza > soglia, fft_coeff, 0)
-    indiciPicchi, _ = find_peaks(potenza, height=1e8)
+    indiciPicchi, _ = find_peaks(potenza, height=alto)
     picchi = potenza[indiciPicchi]
     print(f"Picchi trovati: {picchi}")
     fft_coeff_filtrati = np.zeros_like(fft_coeff) 
@@ -340,7 +374,7 @@ def mascheraRumoreB(fft_coeff, indice):
             indice_sinistra -= 1
         indice_sinistra += 1  # indice sopra la soglia
 
-        fft_coeff_filtrati[piccoScelto] = fft_coeff[piccoScelto] # azzero altri 
+        fft_coeff_filtrati[indice_sinistra:indice_destra] = fft_coeff[indice_sinistra:indice_destra] # azzero altri 
 
     if indice == 2:
         pass
@@ -497,12 +531,16 @@ def esercitazioneB1(parte):
     if parte == "1":
         freq_camp, dati = apriAudio(file)
         dati=dati[:,0]
+        #dati=dati.astype(np.float32)
+        #dati /= np.max(np.abs(dati)) # normalizzo
+        dati = dati / 32767
         plottaWAV(dati)
+        
         salvaCanale(dati, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/copia.wav")
         coeff_fft, pot = fftSegnaleB1(dati)
         print(len)
         plottaFFT(coeff_fft, pot)
-        zoomPicchi(pot)
+        #zoomPicchi(pot)
         zoomPicchiFrequenza(pot)
         
         fft_filtrato = mascheraRumoreB(coeff_fft, index)
@@ -512,6 +550,8 @@ def esercitazioneB1(parte):
         
         plottaRisintonizzataB(dati, segnale_fft, index=index) # ifft
         plottaRisintonizzataB(dati, segnale_seni_coseni, index=index) #seni e coseni
+        
+        riascoltaSegnale(segnale_fft)
         
     elif parte == "2":
         freq_camp, dati = apriAudio(file)
