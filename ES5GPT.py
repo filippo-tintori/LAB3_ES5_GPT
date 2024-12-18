@@ -238,42 +238,6 @@ def zoomPicchiFrequenza(potenza, frequenza_campionamento=44100, zoom_range=50):
     plt.show()
 
 
-
-"""def zoomPicchiFrequenza(potenza):
-    picchiTrovati, _ = find_peaks(potenza, height=1e14)
-    picchiTrovati = picchiTrovati[:len(picchiTrovati)//2-1]
-    pot= potenza[picchiTrovati]
-    picchiTrovati = [IndiceAfreq(potenza, picchi) for picchi in picchiTrovati] # conversione
-
-    num_picchi = len(picchiTrovati)
-    cols = 3  # Numero di colonne
-    rows = (num_picchi // cols) + (num_picchi % cols > 0)  # Calcola il numero di righe
-    
-    # Limita la dimensione della figura
-    max_figsize = 10  # Limite massimo per la larghezza/altezza della figura
-    figsize = (min(cols * 5, max_figsize), min(rows * 5, max_figsize))  # Imposta una dimensione più piccola
-    
-    fig, ax = plt.subplots(rows, cols, figsize=figsize)
-    
-    # Se ax è una matrice di più righe e colonne, lo appiattiamo in un array
-    ax = ax.flatten()
-    
-    for i, picco in tqdm(enumerate(picchiTrovati)):
-        # Traccia il grafico zoomato per ogni picco
-        ax[i].plot(picchiTrovati[i], pot[i])
-        ax[i].set_title(f"Zoom Picco {i + 1} (Posizione {np.round(picco, 2)} (Hz))")
-        ax[i].set_xlabel("Frequenza (Hz)")
-        ax[i].set_ylabel("Potenza (u.a.)")
-        ax[i].grid()
-
-    # Rimuove gli assi vuoti, se necessario
-    for j in range(num_picchi, len(ax)):
-        fig.delaxes(ax[j])
-
-    plt.tight_layout()
-    plt.show()"""
-
-
 def salvaCanale(dati, frequenza_campionamento, file_output):
     wav.write(file_output, frequenza_campionamento, dati)
     
@@ -296,7 +260,7 @@ def plottaFFT(fft_coeff, potenza):
 
     plt.subplot(3, 1, 1)
     plt.plot(freq[:len(fft_coeff)//2], potenza[:len(fft_coeff)//2])
-    plt.title("Potenza")
+    plt.title("Spettro di potenza")
     plt.xlabel("Frequenza (Hz)")
     plt.ylabel("Potenza (u.a.)")
 
@@ -317,9 +281,40 @@ def plottaFFT(fft_coeff, potenza):
 
 
 ##############################
-#      MASCHERA RUMORE       #
+#      MASCHERA RUMORE  A    #
 ##############################
 def mascheraRumore(fft_coeff, indice):
+    """Rimuove i coefficienti che portano rumore."""
+    potenza = np.abs(fft_coeff) ** 2
+    indiciPicchi, _ = find_peaks(potenza, height=1e8)
+    picchi = potenza[indiciPicchi]
+    print(f"Picchi trovati: {picchi}")
+    fft_coeff_filtrati = np.zeros_like(fft_coeff) 
+
+    # scelta per ogni file
+    if indice == 1:
+        piccoScelto = indiciPicchi[np.argmin(potenza[indiciPicchi])] # min = preservo il picco con potenza minore
+        fft_coeff_filtrati[piccoScelto] = fft_coeff[piccoScelto] # azzero altri 
+
+    if indice == 2:
+        picchi_scelti = indiciPicchi[:12]
+        for index, picco in enumerate(picchi_scelti):
+            fft_coeff_filtrati[picco] = fft_coeff[picco]
+        
+    if indice == 3:
+        print(picchi)
+        picchi_scelti = indiciPicchi[1:2]
+        for index, picco in enumerate(picchi_scelti):
+            fft_coeff_filtrati[picco] = fft_coeff[picco]
+        
+    return fft_coeff_filtrati
+
+
+##############################
+#      MASCHERA RUMORE  B    #
+##############################
+
+def mascheraRumoreB(fft_coeff, indice):
     """Rimuove i coefficienti che portano rumore."""
     potenza = np.abs(fft_coeff) ** 2
     #fft_coeff_filtrati = np.where(potenza > soglia, fft_coeff, 0)
@@ -330,7 +325,22 @@ def mascheraRumore(fft_coeff, indice):
 
     # scelta per ogni file
     if indice == 1:
-        piccoScelto = indiciPicchi[np.argmin(potenza[indiciPicchi])] # min = preservo il picco con potenza minore
+        soglia = 1e13
+        piccoScelto = indiciPicchi[0] # min = preservo il picco con potenza minore
+    
+        # DX
+        indice_destra = piccoScelto
+        while indice_destra < len(potenza) - 1 and potenza[indice_destra] > soglia:
+            indice_destra += 1
+        indice_destra -= 1 # indice sopra la soglia
+        
+        
+        # SX
+        indice_sinistra = piccoScelto
+        while indice_sinistra > 0 and potenza[indice_sinistra] > soglia:
+            indice_sinistra -= 1
+        indice_sinistra += 1  # indice sopra la soglia
+
         fft_coeff_filtrati[piccoScelto] = fft_coeff[piccoScelto] # azzero altri 
 
     if indice == 2:
@@ -349,8 +359,6 @@ def mascheraRumore(fft_coeff, indice):
             fft_coeff_filtrati[picco] = fft_coeff[picco]
         
     return fft_coeff_filtrati
-
-# migliorare il tempo di esecuzione del programma - per ora neglio ordini dei min. ___> integrare scipy
 
 
 
