@@ -583,6 +583,7 @@ def esercitazioneB1(parte):
         print("Parte non riconosciuta.")
         print("Parti disponibili: 1, 2, 3, 4, 5")
         
+        
 ##############################
 #      ESERCITAZIONE B2      #
 ##############################
@@ -602,6 +603,7 @@ def esercitazioneB2(parte):
         
     else:
         print("Parte non riconosciuta.")
+
 
 ##############################
 #      ESERCITAZIONE B3      #
