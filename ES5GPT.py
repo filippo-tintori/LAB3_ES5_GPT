@@ -334,7 +334,6 @@ def mascheraRumoreB(fft_coeff, indice):
             indice_destra += 1
         indice_destra -= 1 # indice sopra la soglia
         
-        
         # SX
         indice_sinistra = piccoScelto
         while indice_sinistra > 0 and potenza[indice_sinistra] > soglia:
@@ -344,19 +343,10 @@ def mascheraRumoreB(fft_coeff, indice):
         fft_coeff_filtrati[piccoScelto] = fft_coeff[piccoScelto] # azzero altri 
 
     if indice == 2:
-        #piccoScelto = picchi[12] # valore che voglio togliere
-        picchi_scelti = indiciPicchi[:12]
-        #fft_coeff_filtrati[~np.isin(np.abs(fft_coeff)**2, picchi_scelti)]=0 # azzero questo
-        for index, picco in enumerate(picchi_scelti):
-            fft_coeff_filtrati[picco] = fft_coeff[picco]
+        pass
         
     if indice == 3:
-         #piccoScelto = picchi[12] # valore che voglio togliere
-        print(picchi)
-        picchi_scelti = indiciPicchi[1:2]
-        #fft_coeff_filtrati[~np.isin(np.abs(fft_coeff)**2, picchi_scelti)]=0 # azzero questo
-        for index, picco in enumerate(picchi_scelti):
-            fft_coeff_filtrati[picco] = fft_coeff[picco]
+        pass
         
     return fft_coeff_filtrati
 
@@ -432,7 +422,39 @@ def plottaRisintonizzata(dati_originali, dati_filtrati, index):
     
     plt.show()
 
-
+def plottaRisintonizzataB(dati_originali, dati_filtrati, index):
+    """Plotta il confronto tra segnale originale e filtrato con zoom su un'area."""
+    freqcamp = 44100
+    durata = len(dati_originali) / freqcamp  # Durata in secondi
+    tempo = np.linspace(0, durata, len(dati_originali))
+    
+    # Creazione della figura principale
+    fig, ax = plt.subplots(figsize=(8, 6))
+    ax.plot(tempo, dati_originali, label="Originale", color="dodgerblue")
+    ax.plot(tempo, dati_filtrati, label="Filtrato", alpha=0.7, color="coral")
+    
+    # Etichette e titolo
+    ax.set_xlabel("Tempo (s)")
+    ax.set_ylabel("Ampiezza (u.a.)")
+    ax.set_title("Confronto tra segnale originale e filtrato")
+    ax.legend(loc="upper left")
+    
+    # Aggiunta dello zoom
+    axins = inset_axes(ax, width="30%", height="30%", loc='upper right', borderpad=1)
+    
+    # Zoomare sull'intervallo x da 0.1 a 0.2
+    axins.plot(tempo, dati_originali, label="Originale")
+    axins.plot(tempo, dati_filtrati, label="Filtrato", alpha=0.7)
+    
+    # Impostazioni dell'area zoomata
+    if index == 3:
+        axins.set_xlim(0.1, 0.11)
+    else:
+        axins.set_xlim(0.1, 0.2)
+    
+    axins.set_ylim(min(dati_originali), max(dati_originali))
+    
+    plt.show()
 
 ##############################
 #      ESERCITAZIONE A       #
@@ -440,6 +462,11 @@ def plottaRisintonizzata(dati_originali, dati_filtrati, index):
 
 def esercitazioneA(parte):
     index = int(parte)
+    if index>=4 or x<=0:
+        print("Parte non riconosciuta.")
+        print("Parti disponibili: 1, 2, 3")
+        exit
+    
     file = [index-1]
     print(f"Elaborazione del file: {file}")
     
@@ -478,6 +505,14 @@ def esercitazioneB1(parte):
         zoomPicchi(pot)
         zoomPicchiFrequenza(pot)
         
+        fft_filtrato = mascheraRumoreB(coeff_fft, index)
+        
+        segnale_fft = risintetizzaSegnale(fft_filtrato)
+        segnale_seni_coseni = risintetizzaSeniCoseni(fft_filtrato)
+        
+        plottaRisintonizzataB(dati, segnale_fft, index=index) # ifft
+        plottaRisintonizzataB(dati, segnale_seni_coseni, index=index) #seni e coseni
+        
     elif parte == "2":
         freq_camp, dati = apriAudio(file)
         fft_coeff, potenza = fftSegnale(dati)
@@ -506,6 +541,7 @@ def esercitazioneB1(parte):
         
     else:
         print("Parte non riconosciuta.")
+        print("Parti disponibili: 1, 2, 3, 4, 5")
         
 ##############################
 #      ESERCITAZIONE B2      #
