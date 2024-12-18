@@ -145,7 +145,85 @@ def plottaWAV(canale):
     plt.ylabel("Ampiezza (u. a.)")
     plt.legend()
     plt.show()
+
+def IndiceAfreq(potenza, indice):
+    f= np.fft.fftfreq(len(potenza),d=1/44100)
+    freqi=f[indice]
+    return freqi
     
+
+def zoomPicchi(potenza):
+    picchiTrovati, _ = find_peaks(potenza, height=1e14)
+    picchiTrovati=picchiTrovati[:len(picchiTrovati)//2-1]
+
+    num_picchi = len(picchiTrovati)
+    cols = 3  # Numero di colonne
+    rows = (num_picchi // cols) + (num_picchi % cols > 0)  # Calcola il numero di righe
+    
+    # Limita la dimensione della figura
+    max_figsize = 10  # Limite massimo per la larghezza/altezza della figura
+    figsize = (min(cols * 5, max_figsize), min(rows * 5, max_figsize))  # Imposta una dimensione più piccola
+    
+    fig, ax = plt.subplots(rows, cols, figsize=figsize)
+    
+    # Se ax è una matrice di più righe e colonne, lo appiattiamo in un array
+    ax = ax.flatten()
+    
+    for i, picco in tqdm(enumerate(picchiTrovati)):
+        start = max(0, picco - 50)  # Imposta il margine sinistro
+        end = min(len(potenza), picco + 50)  # Imposta il margine destro
+        # Traccia il grafico zoomato per ogni picco
+        ax[i].plot(np.arange(start, end), potenza[start:end])
+        ax[i].set_title(f"Zoom Picco {i + 1} (Posizione {picco})")
+        ax[i].set_xlabel("Indice")
+        ax[i].set_ylabel("Potenza")
+        ax[i].grid()
+
+    # Rimuove gli assi vuoti, se necessario
+    for j in range(num_picchi, len(ax)):
+        fig.delaxes(ax[j])
+
+    plt.tight_layout()
+    plt.show()
+
+
+def zoomPicchiFrequenza(potenza):
+    picchiTrovati, _ = find_peaks(potenza, height=1e14)
+    picchiTrovati = picchiTrovati[:len(picchiTrovati)//2-1]
+    
+    picchiTrovati = [IndiceAfreq(potenza, picchi) for picchi in picchiTrovati] # conversione
+
+    num_picchi = len(picchiTrovati)
+    cols = 3  # Numero di colonne
+    rows = (num_picchi // cols) + (num_picchi % cols > 0)  # Calcola il numero di righe
+    
+    # Limita la dimensione della figura
+    max_figsize = 10  # Limite massimo per la larghezza/altezza della figura
+    figsize = (min(cols * 5, max_figsize), min(rows * 5, max_figsize))  # Imposta una dimensione più piccola
+    
+    fig, ax = plt.subplots(rows, cols, figsize=figsize)
+    
+    # Se ax è una matrice di più righe e colonne, lo appiattiamo in un array
+    ax = ax.flatten()
+    
+    for i, picco in tqdm(enumerate(picchiTrovati)):
+        start = int(max(0, picco - 50) ) # Imposta il margine sinistro
+        end = int(min(len(potenza), picco + 50))  # Imposta il margine destro
+        # Traccia il grafico zoomato per ogni picco
+        ax[i].plot(np.arange(start, end), potenza[start:end])
+        ax[i].set_title(f"Zoom Picco {i + 1} (Posizione {picco})")
+        ax[i].set_xlabel("Frequenza (Hz)")
+        ax[i].set_ylabel("Potenza (u.a.)")
+        ax[i].grid()
+
+    # Rimuove gli assi vuoti, se necessario
+    for j in range(num_picchi, len(ax)):
+        fig.delaxes(ax[j])
+
+    plt.tight_layout()
+    plt.show()
+
+
 def salvaCanale(dati, frequenza_campionamento, file_output):
     wav.write(file_output, frequenza_campionamento, dati)
     
@@ -160,8 +238,6 @@ def fftSegnaleB1(dati):
     fft_coeff = np.fft.fft(dati)
     potenza = np.abs(fft_coeff) ** 2
     return fft_coeff, potenza
-
-
 
 def plottaFFT(fft_coeff, potenza):
     """Plotta potenza, parte reale e parte immaginaria dei coefficienti FFT."""
@@ -188,6 +264,7 @@ def plottaFFT(fft_coeff, potenza):
 
     plt.tight_layout()
     plt.show()
+
 
 ##############################
 #      MASCHERA RUMORE       #
@@ -337,8 +414,11 @@ def esercitazioneB1(parte):
         dati=dati[:,0]
         plottaWAV(dati)
         salvaCanale(dati, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/copia.wav")
-        coeff_fft, pot=fftSegnaleB1(dati)
+        coeff_fft, pot = fftSegnaleB1(dati)
+        print(len)
         plottaFFT(coeff_fft, pot)
+        zoomPicchi(pot)
+        zoomPicchiFrequenza(pot)
         
     elif parte == "2":
         freq_camp, dati = apriAudio(file)
