@@ -139,7 +139,7 @@ def plottaWAV(canale):
     durata = len(canale) / freqcamp  # Durata in secondi
     tempo = np.linspace(0, durata, len(canale))
     plt.figure(figsize=(10, 5))
-    plt.plot(tempo, canale, label="Forma d'onda", color = 'orange')
+    plt.plot(tempo, canale, label="Forma d'onda", color = 'coral')
     plt.title("Forma d'onda.")
     plt.xlabel("Tempo (s)")
     plt.ylabel("Ampiezza (u. a.)")
