@@ -273,7 +273,7 @@ def zoomPicchiFrequenza(potenza, indice, frequenza_campionamento=44100, zoom_ran
         axs[i].grid(True)
 
     # Mostra il grafico
-    plt.suptitle("Zoom sui Picchi della Potenza (Prima metà)")
+    plt.suptitle("Zoom sui picchi della potenza")
     plt.show()
 
 
@@ -443,8 +443,7 @@ def mascheraRumoreB(fft_coeff, indice):
         p, _ = find_peaks(potenza[freqAIndice(potenza, 882):freqAIndice(potenza, 1977)], height=1e3)
         p1=p[0]
         p2=p[3]
-        # print("p: ", p)
-        # [print(potenza[freqAIndice(potenza, 882) + pp]) for pp in p]
+        
         picchiScelti4 = [i, piccoMax, j, piccoMed, k, p1, p2, piccoMin, piccoMin2 ]
         
         for pic in picchiScelti4:
@@ -643,7 +642,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni2, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft2)
-        salvaCanale(segnale_fft, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/2.wav")
+        salvaCanale(segnale_fft2, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/2.wav")
 
         
         #parte 3
@@ -654,7 +653,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni3, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft3)
-        salvaCanale(segnale_fft, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/3.wav")
+        salvaCanale(segnale_fft3, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/3.wav")
 
         
         #parte 4
@@ -665,7 +664,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni4, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft4)
-        salvaCanale(segnale_fft, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/4.wav")
+        salvaCanale(segnale_fft4, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/4.wav")
 
         
     elif parte == "2":
