@@ -241,7 +241,6 @@ def zoomPicchiFrequenza(potenza, indice, frequenza_campionamento=44100, zoom_ran
     freq_peaks = frequenze[peaks]
     potenza_peaks = potenza[peaks]
 
-
     num_picchi = len(peaks)
     if num_picchi == 0:
         print("Nessun picco rilevato!")
@@ -257,7 +256,10 @@ def zoomPicchiFrequenza(potenza, indice, frequenza_campionamento=44100, zoom_ran
 
     if metà_picchi == 1:
         axs = [axs]
-    print(peaks)
+        
+    print("Picchi: ", peaks)
+    
+    
     for i, peak_idx in enumerate(peaks):
         # Definizione dei limiti dello zoom
         start = max(0, peak_idx - zoom_range)
@@ -281,6 +283,7 @@ def salvaCanale(dati, frequenza_campionamento, file_output):
     """Salva un file .wav in locale."""
     wav.write(file_output, frequenza_campionamento, dati)
 
+
 ##############################
 #            FFT             #
 ##############################
@@ -296,6 +299,8 @@ def fftSegnaleB1(dati): # per es B1
     fft_coeff = np.fft.fft(dati)
     potenza = np.abs(fft_coeff) ** 2
     return fft_coeff, potenza
+
+
 
 def plottaFFT(fft_coeff, potenza):
     """Plotta potenza, parte reale e parte immaginaria dei coefficienti FFT."""
@@ -366,13 +371,21 @@ def mascheraRumoreB(fft_coeff, indice):
         alto = 1e4
     if indice == 3:
         alto = 0
+    if indice == 4:
+        alto = 0
+    if indice == 5:
+        alto = 0
     
     
     potenza = np.abs(fft_coeff) ** 2
-    #fft_coeff_filtrati = np.where(potenza > soglia, fft_coeff, 0)
+    
     indiciPicchi, _ = find_peaks(potenza, height=alto)
+    
     picchi = potenza[indiciPicchi]
     print(f"Picchi trovati: {picchi}")
+    
+    
+    
     fft_coeff_filtrati = np.zeros_like(fft_coeff) 
     fft_coeff_filtrati2 = np.zeros_like(fft_coeff) 
     fft_coeff_filtrati3 = np.zeros_like(fft_coeff)
@@ -703,7 +716,6 @@ def esercitazioneB1(parte):
         
         salvaCanale(dati, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/copia.wav")
         coeff_fft, pot = fftSegnaleB1(dati)
-        print(len)
         plottaFFT(coeff_fft, pot)
         #zoomPicchi(pot)
         zoomPicchiFrequenza(pot, index)
@@ -761,7 +773,6 @@ def esercitazioneB1(parte):
         
         salvaCanale(dati, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/copia.wav")
         coeff_fft, pot = fftSegnaleB1(dati)
-        print(len)
         plottaFFT(coeff_fft, pot)
         #zoomPicchi(pot)
         zoomPicchiFrequenza(pot, index)
@@ -811,25 +822,13 @@ def esercitazioneB1(parte):
 
         
     elif parte == "3":
-        freq_camp, dati = apriAudio(file)
-        fft_coeff, potenza = fftSegnale(dati)
-        fft_coeff_filtrato = mascheraRumore(fft_coeff, potenza)
-        segnale_filtrato = risintetizzaSegnale(fft_coeff_filtrato)
-        print("Segnale filtrato sintetizzato usando FFT inversa.")
+        pass
         
     elif parte == "4":
-        freq_camp, dati = apriAudio(file)
-        fft_coeff, potenza = fftSegnale(dati)
-        fft_coeff_filtrato = mascheraRumore(fft_coeff, potenza)
-        segnale_filtrato = risintetizzaSegnale(fft_coeff_filtrato)
-        print("Segnale filtrato sintetizzato usando FFT inversa.")
+        pass
         
     elif parte == "5":
-        freq_camp, dati = apriAudio(file)
-        fft_coeff, potenza = fftSegnale(dati)
-        fft_coeff_filtrato = mascheraRumore(fft_coeff, potenza)
-        segnale_filtrato = risintetizzaSegnale(fft_coeff_filtrato)
-        print("Segnale filtrato sintetizzato usando FFT inversa.")
+        pass
         
     else:
         print("Parte non riconosciuta.")
@@ -856,7 +855,7 @@ def esercitazioneB2(parte):
         
     else:
         print("Parte non riconosciuta.")
-
+        print("Parti disponibili: 1, 2")
 
 
 ##############################
@@ -878,6 +877,7 @@ def esercitazioneB3(parte):
 
     else:
         print("Parte non riconosciuta.")
+        print("Parti disponibili: 1, 2")
 
 
 
