@@ -413,6 +413,7 @@ def mascheraRumoreB(fft_coeff, indice):
         
         # prendo un picco prima del primo picco
         
+        """
         soglia2  = 2.5e5
         
         i = piccoMax
@@ -445,6 +446,14 @@ def mascheraRumoreB(fft_coeff, indice):
         p2=p[3]
         
         picchiScelti4 = [i, piccoMax, j, piccoMed, k, p1, p2, piccoMin, piccoMin2 ]
+        
+        for pic in picchiScelti4:
+            fft_coeff_filtrati4[pic] = fft_coeff[pic]
+        """
+        picchiScelti4 = [piccoMax-2, piccoMax-1, piccoMax, piccoMax +1 , piccoMax +2 , 
+                         piccoMed -2, piccoMed -1, piccoMed, piccoMed +1, piccoMed + 2, 
+                         piccoMin -1, piccoMin, piccoMin +1 , 
+                         piccoMin2]
         
         for pic in picchiScelti4:
             fft_coeff_filtrati4[pic] = fft_coeff[pic]
