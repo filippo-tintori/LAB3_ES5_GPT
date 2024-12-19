@@ -112,7 +112,7 @@ def riascoltaSegnale(segnale, frequenza_campionamento=44100):
     try:
         # Riproduce il segnale
         speaker.play(segnale_normalizzato, samplerate=frequenza_campionamento)
-        print("Riprodizione eseguita!")
+        print("Riproduzione eseguita!")
     except Exception as e:
         print(f"Errore durante la riproduzione del segnale: {e}")
         
@@ -440,21 +440,15 @@ def mascheraRumoreB(fft_coeff, indice):
                 break
             k += 1
         
-        p=find_peaks(potenza[freqAIndice(potenza, 882):freqAIndice(potenza, 1977)], height=1e3)
+        p, _ = find_peaks(potenza[freqAIndice(potenza, 882):freqAIndice(potenza, 1977)], height=1e3)
         p1=p[0]
-        p2=p[1]
-        print(p)
-        picchiScelti4=[i,piccoMax, j,piccoMed, k,p1,p2, piccoMin, piccoMin2 ]
-        fft_coeff_filtrati4[i] = fft_coeff[i]
-        fft_coeff_filtrati4[j] = fft_coeff[j]
-        fft_coeff_filtrati4[k] = fft_coeff[k]
-        fft_coeff_filtrati4[piccoMax] = fft_coeff[piccoMax]
-        fft_coeff_filtrati4[piccoMed] = fft_coeff[piccoMed]
-        fft_coeff_filtrati4[piccoMin] = fft_coeff[piccoMin]
-        fft_coeff_filtrati4[piccoMin2] = fft_coeff[piccoMin2]
-        fft_coeff_filtrati4[p2] = fft_coeff[p2]
-        fft_coeff_filtrati4[p1] = fft_coeff[p1]
+        p2=p[3]
+        # print("p: ", p)
+        # [print(potenza[freqAIndice(potenza, 882) + pp]) for pp in p]
+        picchiScelti4 = [i, piccoMax, j, piccoMed, k, p1, p2, piccoMin, piccoMin2 ]
         
+        for pic in picchiScelti4:
+            fft_coeff_filtrati4[pic] = fft_coeff[pic]
         
         
     if indice == 2:
@@ -620,8 +614,7 @@ def esercitazioneB1(parte):
         freq_camp, dati = apriAudio(file)
         dati=dati[:,0]
         dati=dati.astype(np.float32)
-        #dati /= np.max(np.abs(dati)) # normalizzo
-        dati = dati / 32767
+        dati = dati / 32767 # norm
         plottaWAV(dati)
         
         salvaCanale(dati, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/copia.wav")
@@ -639,7 +632,8 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_fft, index=index) # ifft
         plottaRisintonizzataB(dati, segnale_seni_coseni, index=index) #seni e coseni
         
-        riascoltaSegnale(segnale_fft)
+        #riascoltaSegnale(segnale_fft)
+        salvaCanale(segnale_fft, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/1.wav")
         
         #parte 2
         segnale_fft2 = risintetizzaSegnale(fft_filtrato2)
@@ -648,7 +642,9 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_fft2, index=index) # ifft
         plottaRisintonizzataB(dati, segnale_seni_coseni2, index=index) #seni e coseni
         
-        riascoltaSegnale(segnale_fft2)
+        #riascoltaSegnale(segnale_fft2)
+        salvaCanale(segnale_fft, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/2.wav")
+
         
         #parte 3
         segnale_fft3 = risintetizzaSegnale(fft_filtrato3)
@@ -657,16 +653,20 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_fft3, index=index) # ifft
         plottaRisintonizzataB(dati, segnale_seni_coseni3, index=index) #seni e coseni
         
-        riascoltaSegnale(segnale_fft3)
+        #riascoltaSegnale(segnale_fft3)
+        salvaCanale(segnale_fft, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/3.wav")
+
         
-         #parte 4
+        #parte 4
         segnale_fft4 = risintetizzaSegnale(fft_filtrato4)
         segnale_seni_coseni4 = risintetizzaSeniCoseni(fft_filtrato4)
         
         plottaRisintonizzataB(dati, segnale_fft4, index=index) # ifft
         plottaRisintonizzataB(dati, segnale_seni_coseni4, index=index) #seni e coseni
         
-        riascoltaSegnale(segnale_fft4)
+        #riascoltaSegnale(segnale_fft4)
+        salvaCanale(segnale_fft, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/4.wav")
+
         
     elif parte == "2":
         freq_camp, dati = apriAudio(file)
