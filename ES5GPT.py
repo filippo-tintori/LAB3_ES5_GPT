@@ -232,7 +232,7 @@ def zoomPicchiFrequenza(potenza, indice, frequenza_campionamento=44100, zoom_ran
     if indice == 1:
         alto = 1e5
     if indice == 2:
-        alto = 1e6
+        alto = 1e4
     if indice == 3:
         alto = 1e6
     
@@ -363,7 +363,7 @@ def mascheraRumoreB(fft_coeff, indice):
     if indice == 1:
         alto = 1e4
     if indice == 2:
-        alto = 0
+        alto = 1e4
     if indice == 3:
         alto = 0
     
@@ -460,7 +460,83 @@ def mascheraRumoreB(fft_coeff, indice):
         
         
     if indice == 2:
-        pass
+        soglia = 1e4
+        piccoMax = indiciPicchi[0] # min = preservo il picco con potenza minore
+        piccoMed = indiciPicchi[1]
+        piccoMin = indiciPicchi[2]
+        piccoMin2 = indiciPicchi[3]
+    
+        # DX
+        indice_destra = piccoMax
+        while indice_destra < len(potenza) - 1 and potenza[indice_destra] > soglia:
+            indice_destra += 1
+        indice_destra -= 1 # indice sopra la soglia
+        
+        # SX
+        indice_sinistra = piccoMax
+        while indice_sinistra > 0 and potenza[indice_sinistra] > soglia:
+            indice_sinistra -= 1
+        indice_sinistra += 1  # indice sopra la soglia
+
+        fft_coeff_filtrati[indice_sinistra:indice_destra] = fft_coeff[indice_sinistra:indice_destra]
+        
+        # prendo un punto e basta
+        picchi2 = [piccoMax, piccoMed]
+        for pic in picchi2:
+            fft_coeff_filtrati2[pic] = fft_coeff[pic]
+        
+        picchi3 = [piccoMax, piccoMed, piccoMin]
+        for pic in picchi3:
+            fft_coeff_filtrati3[pic] = fft_coeff[pic]
+        
+        # esercizio ultimo
+        
+        # prendo un picco prima del primo picco
+        
+        """
+        soglia2  = 2.5e5
+        
+        i = piccoMax
+        while i <= piccoMax:
+            if potenza[i] <= soglia2: # prendo i e i+1
+                break
+            i -= 1
+        
+        j = piccoMax
+        while j <= piccoMax:
+            if potenza[j] <= soglia2: # prendo j e j-1
+                break
+            j += 1
+        
+        indiciUltimo = picchi3 + [i, i+1, j, j-1]
+        
+        for ind in indiciUltimo:
+            fft_coeff_filtrati3[ind] = fft_coeff[ind]
+        
+        soglia3 = 3e4
+        
+        k = piccoMed
+        while k >= piccoMed:
+            if potenza[k] <= soglia3: # prendo k-1
+                break
+            k += 1
+        
+        p, _ = find_peaks(potenza[freqAIndice(potenza, 882):freqAIndice(potenza, 1977)], height=1e3)
+        p1=p[0]
+        p2=p[3]
+        
+        picchiScelti4 = [i, piccoMax, j, piccoMed, k, p1, p2, piccoMin, piccoMin2 ]
+        
+        for pic in picchiScelti4:
+            fft_coeff_filtrati4[pic] = fft_coeff[pic]
+        """
+        picchiScelti4 = [piccoMax-2, piccoMax-1, piccoMax, piccoMax +1 , piccoMax +2 , 
+                         piccoMed -2, piccoMed -1, piccoMed, piccoMed +1, piccoMed + 2, 
+                         piccoMin -1, piccoMin, piccoMin +1 , 
+                         piccoMin2]
+        
+        for pic in picchiScelti4:
+            fft_coeff_filtrati4[pic] = fft_coeff[pic]
         
     if indice == 3:
         pass
@@ -678,8 +754,61 @@ def esercitazioneB1(parte):
         
     elif parte == "2":
         freq_camp, dati = apriAudio(file)
-        fft_coeff, potenza = fftSegnale(dati)
-        plottaFFT(fft_coeff, potenza)
+        dati=dati[:,0]
+        dati=dati.astype(np.float32)
+        dati = dati / 32767 # norm
+        plottaWAV(dati)
+        
+        salvaCanale(dati, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/copia.wav")
+        coeff_fft, pot = fftSegnaleB1(dati)
+        print(len)
+        plottaFFT(coeff_fft, pot)
+        #zoomPicchi(pot)
+        zoomPicchiFrequenza(pot, index)
+        
+        fft_filtrato , fft_filtrato2, fft_filtrato3, fft_filtrato4 = mascheraRumoreB(coeff_fft, index)
+        
+        segnale_fft = risintetizzaSegnale(fft_filtrato)
+        segnale_seni_coseni = risintetizzaSeniCoseni(fft_filtrato)
+        
+        plottaRisintonizzataB(dati, segnale_fft, index=index) # ifft
+        plottaRisintonizzataB(dati, segnale_seni_coseni, index=index) #seni e coseni
+        
+        #riascoltaSegnale(segnale_fft)
+        salvaCanale(segnale_fft, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/1.wav")
+        
+        #parte 2
+        segnale_fft2 = risintetizzaSegnale(fft_filtrato2)
+        segnale_seni_coseni2 = risintetizzaSeniCoseni(fft_filtrato2)
+        
+        plottaRisintonizzataB(dati, segnale_fft2, index=index) # ifft
+        plottaRisintonizzataB(dati, segnale_seni_coseni2, index=index) #seni e coseni
+        
+        #riascoltaSegnale(segnale_fft2)
+        salvaCanale(segnale_fft2, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/2.wav")
+
+        
+        #parte 3
+        segnale_fft3 = risintetizzaSegnale(fft_filtrato3)
+        segnale_seni_coseni3 = risintetizzaSeniCoseni(fft_filtrato3)
+        
+        plottaRisintonizzataB(dati, segnale_fft3, index=index) # ifft
+        plottaRisintonizzataB(dati, segnale_seni_coseni3, index=index) #seni e coseni
+        
+        #riascoltaSegnale(segnale_fft3)
+        salvaCanale(segnale_fft3, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/3.wav")
+
+        
+        #parte 4
+        segnale_fft4 = risintetizzaSegnale(fft_filtrato4)
+        segnale_seni_coseni4 = risintetizzaSeniCoseni(fft_filtrato4)
+        
+        plottaRisintonizzataB(dati, segnale_fft4, index=index) # ifft
+        plottaRisintonizzataB(dati, segnale_seni_coseni4, index=index) #seni e coseni
+        
+        #riascoltaSegnale(segnale_fft4)
+        salvaCanale(segnale_fft4, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/4.wav")
+
         
     elif parte == "3":
         freq_camp, dati = apriAudio(file)
