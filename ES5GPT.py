@@ -332,6 +332,7 @@ def plottaFFT(fft_coeff, potenza):
 ##############################
 #      MASCHERA RUMORE  A    #
 ##############################
+
 def mascheraRumore(fft_coeff, indice):
     """Rimuove i coefficienti che portano rumore."""
     potenza = np.abs(fft_coeff) ** 2
@@ -714,7 +715,7 @@ def esercitazioneB1(parte):
         dati = dati / 32767 # norm
         plottaWAV(dati)
         
-        salvaCanale(dati, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/copia.wav")
+        salvaCanale(dati, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B1_copia.wav")
         coeff_fft, pot = fftSegnaleB1(dati)
         plottaFFT(coeff_fft, pot)
         #zoomPicchi(pot)
@@ -729,7 +730,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft)
-        salvaCanale(segnale_fft, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/1.wav")
+        salvaCanale(segnale_fft, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B1_1.wav")
         
         #parte 2
         segnale_fft2 = risintetizzaSegnale(fft_filtrato2)
@@ -739,7 +740,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni2, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft2)
-        salvaCanale(segnale_fft2, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/2.wav")
+        salvaCanale(segnale_fft2, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B1_2.wav")
 
         
         #parte 3
@@ -750,7 +751,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni3, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft3)
-        salvaCanale(segnale_fft3, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/3.wav")
+        salvaCanale(segnale_fft3, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B1_3.wav")
 
         
         #parte 4
@@ -761,7 +762,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni4, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft4)
-        salvaCanale(segnale_fft4, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/4.wav")
+        salvaCanale(segnale_fft4, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B1_4.wav")
 
         
     elif parte == "2":
@@ -771,7 +772,7 @@ def esercitazioneB1(parte):
         dati = dati / 32767 # norm
         plottaWAV(dati)
         
-        salvaCanale(dati, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/copia.wav")
+        salvaCanale(dati, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B2_copia.wav")
         coeff_fft, pot = fftSegnaleB1(dati)
         plottaFFT(coeff_fft, pot)
         #zoomPicchi(pot)
@@ -786,7 +787,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft)
-        salvaCanale(segnale_fft, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/1.wav")
+        salvaCanale(segnale_fft, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B2_1.wav")
         
         #parte 2
         segnale_fft2 = risintetizzaSegnale(fft_filtrato2)
@@ -796,7 +797,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni2, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft2)
-        salvaCanale(segnale_fft2, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/2.wav")
+        salvaCanale(segnale_fft2, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B2_2.wav")
 
         
         #parte 3
@@ -807,7 +808,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni3, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft3)
-        salvaCanale(segnale_fft3, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/3.wav")
+        salvaCanale(segnale_fft3, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B2_3.wav")
 
         
         #parte 4
@@ -818,7 +819,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni4, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft4)
-        salvaCanale(segnale_fft4, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/4.wav")
+        salvaCanale(segnale_fft4, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B2_4.wav")
 
         
     elif parte == "3":
