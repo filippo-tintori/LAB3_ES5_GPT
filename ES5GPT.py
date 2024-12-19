@@ -106,12 +106,13 @@ def riascoltaSegnale(segnale, frequenza_campionamento=44100):
     segnale_normalizzato = segnale / max(abs(segnale))
     
     # Ottieni il dispositivo di uscita audio predefinito
-    speaker = sc.default_speaker()
+    speaker = sd.default_speaker()
     
     print("Riproduzione del segnale risintetizzato...")
     try:
         # Riproduce il segnale
         speaker.play(segnale_normalizzato, samplerate=frequenza_campionamento)
+        print("Riprodizione eseguita!")
     except Exception as e:
         print(f"Errore durante la riproduzione del segnale: {e}")
         
@@ -210,7 +211,7 @@ def zoomPicchi(potenza):
     plt.tight_layout()
     plt.show()
 
-def zoomPicchiFrequenza(potenza, frequenza_campionamento=44100, zoom_range=50):
+def zoomPicchiFrequenza(potenza, indice, frequenza_campionamento=44100, zoom_range=50):
     """
     Zoom sui picchi della potenza con i grafici dei primi picchi messi uno accanto all'altro.
     
@@ -222,8 +223,15 @@ def zoomPicchiFrequenza(potenza, frequenza_campionamento=44100, zoom_range=50):
     # Calcolo le frequenze
     frequenze = np.fft.fftfreq(len(potenza), d=1/frequenza_campionamento)
     
+    if indice == 1:
+        alto = 1e5
+    if indice == 2:
+        alto = 1e6
+    if indice == 3:
+        alto = 1e6
+    
     # Trovo i picchi
-    peaks, _ = find_peaks(potenza, height=1e14)  # Soglia minima per i picchi
+    peaks, _ = find_peaks(potenza, height=alto)  # Soglia minima per i picchi
     freq_peaks = frequenze[peaks]
     potenza_peaks = potenza[peaks]
 
@@ -233,7 +241,7 @@ def zoomPicchiFrequenza(potenza, frequenza_campionamento=44100, zoom_range=50):
         print("Nessun picco rilevato!")
         return
 
-    metà_picchi = (num_picchi + 1) // 2    # Considera solo la prima metà dei picchi
+    metà_picchi = (num_picchi+1)// 2   # Considera solo la prima metà dei picchi
     peaks = peaks[:metà_picchi]
     freq_peaks = freq_peaks[:metà_picchi]
     potenza_peaks = potenza_peaks[:metà_picchi]
@@ -243,7 +251,7 @@ def zoomPicchiFrequenza(potenza, frequenza_campionamento=44100, zoom_range=50):
 
     if metà_picchi == 1:
         axs = [axs]
-
+    print(peaks)
     for i, peak_idx in enumerate(peaks):
         # Definizione dei limiti dello zoom
         start = max(0, peak_idx - zoom_range)
@@ -347,7 +355,7 @@ def mascheraRumore(fft_coeff, indice):
 def mascheraRumoreB(fft_coeff, indice):
     """Rimuove i coefficienti che portano rumore."""
     if indice == 1:
-        alto = 1e15
+        alto = 1e4
     if indice == 2:
         alto = 0
     if indice == 3:
@@ -360,25 +368,38 @@ def mascheraRumoreB(fft_coeff, indice):
     picchi = potenza[indiciPicchi]
     print(f"Picchi trovati: {picchi}")
     fft_coeff_filtrati = np.zeros_like(fft_coeff) 
+    fft_coeff_filtrati2 = np.zeros_like(fft_coeff) 
+    fft_coeff_filtrati3 = np.zeros_like(fft_coeff)
 
     # scelta per ogni file
     if indice == 1:
-        soglia = 1e13
-        piccoScelto = indiciPicchi[0] # min = preservo il picco con potenza minore
+        soglia = 1e6
+        piccoMax = indiciPicchi[0] # min = preservo il picco con potenza minore
+        piccoMed = indiciPicchi[1]
+        piccoMin = indiciPicchi[2]
     
         # DX
-        indice_destra = piccoScelto
+        indice_destra = piccoMax
         while indice_destra < len(potenza) - 1 and potenza[indice_destra] > soglia:
             indice_destra += 1
         indice_destra -= 1 # indice sopra la soglia
         
         # SX
-        indice_sinistra = piccoScelto
+        indice_sinistra = piccoMax
         while indice_sinistra > 0 and potenza[indice_sinistra] > soglia:
             indice_sinistra -= 1
         indice_sinistra += 1  # indice sopra la soglia
 
-        fft_coeff_filtrati[indice_sinistra:indice_destra] = fft_coeff[indice_sinistra:indice_destra] # azzero altri 
+        fft_coeff_filtrati[indice_sinistra:indice_destra] = fft_coeff[indice_sinistra:indice_destra]
+        
+        # prendo un punto e basta
+        picchi2 = [piccoMax, piccoMed]
+        for pic in picchi2:
+            fft_coeff_filtrati2[pic] = fft_coeff[pic]
+        
+        picchi3 = [piccoMax, piccoMed, piccoMin]
+        for pic in picchi3:
+            fft_coeff_filtrati3[pic] = fft_coeff[pic]
 
     if indice == 2:
         pass
@@ -386,7 +407,7 @@ def mascheraRumoreB(fft_coeff, indice):
     if indice == 3:
         pass
         
-    return fft_coeff_filtrati
+    return fft_coeff_filtrati, fft_coeff_filtrati2, fft_coeff_filtrati3
 
 
 
@@ -542,7 +563,7 @@ def esercitazioneB1(parte):
     if parte == "1":
         freq_camp, dati = apriAudio(file)
         dati=dati[:,0]
-        #dati=dati.astype(np.float32)
+        dati=dati.astype(np.float32)
         #dati /= np.max(np.abs(dati)) # normalizzo
         dati = dati / 32767
         plottaWAV(dati)
@@ -552,9 +573,9 @@ def esercitazioneB1(parte):
         print(len)
         plottaFFT(coeff_fft, pot)
         #zoomPicchi(pot)
-        zoomPicchiFrequenza(pot)
+        zoomPicchiFrequenza(pot, index)
         
-        fft_filtrato = mascheraRumoreB(coeff_fft, index)
+        fft_filtrato , fft_filtrato2, fft_filtrato3 = mascheraRumoreB(coeff_fft, index)
         
         segnale_fft = risintetizzaSegnale(fft_filtrato)
         segnale_seni_coseni = risintetizzaSeniCoseni(fft_filtrato)
@@ -563,6 +584,24 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni, index=index) #seni e coseni
         
         riascoltaSegnale(segnale_fft)
+        
+        #parte 2
+        segnale_fft2 = risintetizzaSegnale(fft_filtrato2)
+        segnale_seni_coseni2 = risintetizzaSeniCoseni(fft_filtrato2)
+        
+        plottaRisintonizzataB(dati, segnale_fft2, index=index) # ifft
+        plottaRisintonizzataB(dati, segnale_seni_coseni2, index=index) #seni e coseni
+        
+        riascoltaSegnale(segnale_fft2)
+        
+        #parte 3
+        segnale_fft3 = risintetizzaSegnale(fft_filtrato3)
+        segnale_seni_coseni3 = risintetizzaSeniCoseni(fft_filtrato3)
+        
+        plottaRisintonizzataB(dati, segnale_fft3, index=index) # ifft
+        plottaRisintonizzataB(dati, segnale_seni_coseni3, index=index) #seni e coseni
+        
+        riascoltaSegnale(segnale_fft3)
         
     elif parte == "2":
         freq_camp, dati = apriAudio(file)
