@@ -823,13 +823,175 @@ def esercitazioneB1(parte):
 
         
     elif parte == "3":
-        pass
+        freq_camp, dati = apriAudio(file)
+        dati=dati[:,0]
+        dati=dati.astype(np.float32)
+        dati = dati / 32767 # norm
+        plottaWAV(dati)
+        
+        salvaCanale(dati, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B3_copia.wav")
+        coeff_fft, pot = fftSegnaleB1(dati)
+        plottaFFT(coeff_fft, pot)
+        #zoomPicchi(pot)
+        zoomPicchiFrequenza(pot, index)
+        
+        fft_filtrato , fft_filtrato2, fft_filtrato3, fft_filtrato4 = mascheraRumoreB(coeff_fft, index)
+        
+        segnale_fft = risintetizzaSegnale(fft_filtrato)
+        segnale_seni_coseni = risintetizzaSeniCoseni(fft_filtrato)
+        
+        plottaRisintonizzataB(dati, segnale_fft, index=index) # ifft
+        plottaRisintonizzataB(dati, segnale_seni_coseni, index=index) #seni e coseni
+        
+        #riascoltaSegnale(segnale_fft)
+        salvaCanale(segnale_fft, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B3_1.wav")
+        
+        #parte 2
+        segnale_fft2 = risintetizzaSegnale(fft_filtrato2)
+        segnale_seni_coseni2 = risintetizzaSeniCoseni(fft_filtrato2)
+        
+        plottaRisintonizzataB(dati, segnale_fft2, index=index) # ifft
+        plottaRisintonizzataB(dati, segnale_seni_coseni2, index=index) #seni e coseni
+        
+        #riascoltaSegnale(segnale_fft2)
+        salvaCanale(segnale_fft2, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B3_2.wav")
+
+        
+        #parte 3
+        segnale_fft3 = risintetizzaSegnale(fft_filtrato3)
+        segnale_seni_coseni3 = risintetizzaSeniCoseni(fft_filtrato3)
+        
+        plottaRisintonizzataB(dati, segnale_fft3, index=index) # ifft
+        plottaRisintonizzataB(dati, segnale_seni_coseni3, index=index) #seni e coseni
+        
+        #riascoltaSegnale(segnale_fft3)
+        salvaCanale(segnale_fft3, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B3_3.wav")
+
+        
+        #parte 4
+        segnale_fft4 = risintetizzaSegnale(fft_filtrato4)
+        segnale_seni_coseni4 = risintetizzaSeniCoseni(fft_filtrato4)
+        
+        plottaRisintonizzataB(dati, segnale_fft4, index=index) # ifft
+        plottaRisintonizzataB(dati, segnale_seni_coseni4, index=index) #seni e coseni
+        
+        #riascoltaSegnale(segnale_fft4)
+        salvaCanale(segnale_fft4, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B3_4.wav")
+
         
     elif parte == "4":
-        pass
+        freq_camp, dati = apriAudio(file)
+        dati=dati[:,0]
+        dati=dati.astype(np.float32)
+        dati = dati / 32767 # norm
+        plottaWAV(dati)
+        
+        salvaCanale(dati, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B4_copia.wav")
+        coeff_fft, pot = fftSegnaleB1(dati)
+        plottaFFT(coeff_fft, pot)
+        #zoomPicchi(pot)
+        zoomPicchiFrequenza(pot, index)
+        
+        fft_filtrato , fft_filtrato2, fft_filtrato3, fft_filtrato4 = mascheraRumoreB(coeff_fft, index)
+        
+        segnale_fft = risintetizzaSegnale(fft_filtrato)
+        segnale_seni_coseni = risintetizzaSeniCoseni(fft_filtrato)
+        
+        plottaRisintonizzataB(dati, segnale_fft, index=index) # ifft
+        plottaRisintonizzataB(dati, segnale_seni_coseni, index=index) #seni e coseni
+        
+        #riascoltaSegnale(segnale_fft)
+        salvaCanale(segnale_fft, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B4_1.wav")
+        
+        #parte 2
+        segnale_fft2 = risintetizzaSegnale(fft_filtrato2)
+        segnale_seni_coseni2 = risintetizzaSeniCoseni(fft_filtrato2)
+        
+        plottaRisintonizzataB(dati, segnale_fft2, index=index) # ifft
+        plottaRisintonizzataB(dati, segnale_seni_coseni2, index=index) #seni e coseni
+        
+        #riascoltaSegnale(segnale_fft2)
+        salvaCanale(segnale_fft2, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B4_2.wav")
+
+        
+        #parte 3
+        segnale_fft3 = risintetizzaSegnale(fft_filtrato3)
+        segnale_seni_coseni3 = risintetizzaSeniCoseni(fft_filtrato3)
+        
+        plottaRisintonizzataB(dati, segnale_fft3, index=index) # ifft
+        plottaRisintonizzataB(dati, segnale_seni_coseni3, index=index) #seni e coseni
+        
+        #riascoltaSegnale(segnale_fft3)
+        salvaCanale(segnale_fft3, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B4_3.wav")
+
+        
+        #parte 4
+        segnale_fft4 = risintetizzaSegnale(fft_filtrato4)
+        segnale_seni_coseni4 = risintetizzaSeniCoseni(fft_filtrato4)
+        
+        plottaRisintonizzataB(dati, segnale_fft4, index=index) # ifft
+        plottaRisintonizzataB(dati, segnale_seni_coseni4, index=index) #seni e coseni
+        
+        #riascoltaSegnale(segnale_fft4)
+        salvaCanale(segnale_fft4, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B4_4.wav")
+
         
     elif parte == "5":
-        pass
+        freq_camp, dati = apriAudio(file)
+        dati=dati[:,0]
+        dati=dati.astype(np.float32)
+        dati = dati / 32767 # norm
+        plottaWAV(dati)
+        
+        salvaCanale(dati, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B5_copia.wav")
+        coeff_fft, pot = fftSegnaleB1(dati)
+        plottaFFT(coeff_fft, pot)
+        #zoomPicchi(pot)
+        zoomPicchiFrequenza(pot, index)
+        
+        fft_filtrato , fft_filtrato2, fft_filtrato3, fft_filtrato4 = mascheraRumoreB(coeff_fft, index)
+        
+        segnale_fft = risintetizzaSegnale(fft_filtrato)
+        segnale_seni_coseni = risintetizzaSeniCoseni(fft_filtrato)
+        
+        plottaRisintonizzataB(dati, segnale_fft, index=index) # ifft
+        plottaRisintonizzataB(dati, segnale_seni_coseni, index=index) #seni e coseni
+        
+        #riascoltaSegnale(segnale_fft)
+        salvaCanale(segnale_fft, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B5_1.wav")
+        
+        #parte 2
+        segnale_fft2 = risintetizzaSegnale(fft_filtrato2)
+        segnale_seni_coseni2 = risintetizzaSeniCoseni(fft_filtrato2)
+        
+        plottaRisintonizzataB(dati, segnale_fft2, index=index) # ifft
+        plottaRisintonizzataB(dati, segnale_seni_coseni2, index=index) #seni e coseni
+        
+        #riascoltaSegnale(segnale_fft2)
+        salvaCanale(segnale_fft2, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B5_2.wav")
+
+        
+        #parte 3
+        segnale_fft3 = risintetizzaSegnale(fft_filtrato3)
+        segnale_seni_coseni3 = risintetizzaSeniCoseni(fft_filtrato3)
+        
+        plottaRisintonizzataB(dati, segnale_fft3, index=index) # ifft
+        plottaRisintonizzataB(dati, segnale_seni_coseni3, index=index) #seni e coseni
+        
+        #riascoltaSegnale(segnale_fft3)
+        salvaCanale(segnale_fft3, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B5_3.wav")
+
+        
+        #parte 4
+        segnale_fft4 = risintetizzaSegnale(fft_filtrato4)
+        segnale_seni_coseni4 = risintetizzaSeniCoseni(fft_filtrato4)
+        
+        plottaRisintonizzataB(dati, segnale_fft4, index=index) # ifft
+        plottaRisintonizzataB(dati, segnale_seni_coseni4, index=index) #seni e coseni
+        
+        #riascoltaSegnale(segnale_fft4)
+        salvaCanale(segnale_fft4, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B5_4.wav")
+
         
     else:
         print("Parte non riconosciuta.")
