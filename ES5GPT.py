@@ -279,6 +279,16 @@ def zoomPicchiFrequenza(potenza, indice, frequenza_campionamento=44100, zoom_ran
     plt.show()
 
 
+def plottaSpettrogramma(datiAudio, frequenzaCampionamento, titolo="Spettrogramma"):
+    plt.figure(figsize=(10, 6))
+    plt.specgram(datiAudio, Fs=frequenzaCampionamento, NFFT=1024, noverlap=512, cmap='viridis')
+    plt.title(titolo)
+    plt.xlabel("Tempo (s)")
+    plt.ylabel("Frequenza (Hz)")
+    plt.colorbar(label="Potenza")
+    plt.show()
+
+
 def salvaCanale(dati, frequenza_campionamento, file_output):
     """Salva un file .wav in locale."""
     wav.write(file_output, frequenza_campionamento, dati)
@@ -665,6 +675,46 @@ def plottaRisintonizzataB(dati_originali, dati_filtrati, index):
 
 
 
+##############################
+#      SEPARA STRUMENTI      #
+##############################
+
+
+def separaStrumenti(frequenzaCampionamento, datiAudio, fasceFrequenze, cartellaOutput="output"):
+    """
+    Separa strumenti in base a fasce di frequenza predefinite.
+    
+    Args:
+        frequenzaCampionamento: Frequenza di campionamento del file audio.
+        datiAudio: Array dei dati audio.
+        fasceFrequenze: Lista di tuple con intervalli di frequenza (ad esempio [(0, 500), (500, 2000)]).
+        cartellaOutput: Cartella dove salvare i file audio separati.
+    
+    Returns:
+        None
+    """
+    if not os.path.exists(cartellaOutput):
+        os.makedirs(cartellaOutput)
+    
+    # FFT del segnale
+    fftCoeff, potenza = fftSegnale(datiAudio)
+    frequenze = np.fft.fftfreq(len(datiAudio), d=1 / frequenzaCampionamento)
+    
+    # Separazione basata su fasce di frequenza
+    for indice, (frequenzaMin, frequenzaMax) in enumerate(fasceFrequenze):
+        # Crea un filtro per la fascia di frequenze
+        filtro = (frequenze >= frequenzaMin) & (frequenze <= frequenzaMax)
+        filtroCompleto = np.concatenate([filtro, filtro[::-1]])
+        fftFiltrata = fftCoeff * filtroCompleto
+        
+        # Ricostruzione del segnale
+        segnaleFiltrato = np.fft.ifft(fftFiltrata).real
+        
+        # Salva il risultato
+        nomeFileOutput = os.path.join(cartellaOutput, f"strumento_fascia_{indice + 1}.wav")
+        wav.write(nomeFileOutput, frequenzaCampionamento, (segnaleFiltrato * 32767).astype(np.int16))
+        print(f"File salvato: {nomeFileOutput}")
+
 
 
 
@@ -697,6 +747,8 @@ def esercitazioneA(parte):
 
     plottaRisintonizzata(dati, segnale_fft, index=index) # ifft
     plottaRisintonizzata(dati, segnale_seni_coseni, index=index) #seni e coseni
+
+
 
 
 
@@ -998,6 +1050,8 @@ def esercitazioneB1(parte):
         print("Parti disponibili: 1, 2, 3, 4, 5")
 
 
+
+
         
 ##############################
 #      ESERCITAZIONE B2      #
@@ -1009,16 +1063,32 @@ def esercitazioneB2(parte):
     
     if parte == "1":
         freq_camp, dati = apriAudio(file)
-        plottaWav(dati)
+        dati=dati[:,0]
+        dati=dati.astype(np.float32)
+        dati = dati / 32767 # norm
+        plottaWAV(dati)
+        
+        coeff_fft, pot = fftSegnaleB1(dati)
+        plottaFFT(coeff_fft, pot)
+        
+        
         
     elif parte == "2":
         freq_camp, dati = apriAudio(file)
-        fft_coeff, potenza = fftSegnale(dati)
-        plottaFFT(fft_coeff, potenza)
+        dati=dati[:,0]
+        dati=dati.astype(np.float32)
+        dati = dati / 32767 # norm
+        plottaWAV(dati)
+        
+        coeff_fft, pot = fftSegnaleB1(dati)
+        plottaFFT(coeff_fft, pot)
         
     else:
         print("Parte non riconosciuta.")
         print("Parti disponibili: 1, 2")
+
+
+
 
 
 ##############################
@@ -1031,12 +1101,30 @@ def esercitazioneB3(parte):
     
     if parte == "1":
         freq_camp, dati = apriAudio(file)
-        plottaWaveform(freq_camp, dati)
+        dati=dati[:,0]
+        dati=dati.astype(np.float32)
+        dati = dati / 32767 # norm
+        plottaWAV(dati)
+        
+        coeff_fft, pot = fftSegnaleB1(dati)
+        plottaFFT(coeff_fft, pot)
+        plottaSpettrogramma(dati, 44100)
+        
+        separa
+        
+        # separare 0-1500 1500-
+        # non so cosa siano le righe orizzontali, forse rumore di fondo - dio
         
     elif parte == "2":
         freq_camp, dati = apriAudio(file)
-        fft_coeff, potenza = fftSegnale(dati)
-        plottaFFT(fft_coeff, potenza)
+        dati=dati[:,0]
+        dati=dati.astype(np.float32)
+        dati = dati / 32767 # norm
+        plottaWAV(dati)
+        
+        coeff_fft, pot = fftSegnaleB1(dati)
+        plottaFFT(coeff_fft, pot)
+        plottaSpettrogramma(dati, 44100)
 
     else:
         print("Parte non riconosciuta.")
@@ -1055,25 +1143,27 @@ def main():
     parser.add_argument("esercitazione", choices=["A", "B1", "B2", "B3"], help="Seleziona l'esercitazione.")
     parser.add_argument("parte", nargs="?", help="Seleziona la parte dell'esercitazione.")
     args = parser.parse_args()
+    
+    ind = int(args.parte)
 
     if args.esercitazione == "A":
-        if args.parte:
+        if ind>0 and ind<4:
             esercitazioneA(args.parte)
         else:
             print("Per l'esercitazione A, specificare una parte (1, 2 o 3).")
 
     elif args.esercitazione == "B1":
-        if args.parte:
+        if ind>0 and ind<6:
             esercitazioneB1(args.parte)
         else:
             print("Per l'esercitazione B, specificare una parte (da 1 a 5).")
     elif args.esercitazione == "B2":
-        if args.parte:
+        if ind>0 and ind<3:
             esercitazioneB2(args.parte)
         else:
             print("Per l'esercitazione B, specificare una parte (1 o 2).")
     elif args.esercitazione == "B3":
-        if args.parte:
+        if ind>0 and ind<3:
             esercitazioneB3(args.parte)
         else:
             print("Per l'esercitazione B, specificare una parte (1 o 2).")
