@@ -5,14 +5,13 @@ import scipy.io.wavfile as wav
 from scipy.signal import find_peaks
 from tqdm import tqdm
 import soundcard as sd
-#import soundfile # NON SERVE
 import pandas as pd
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes, mark_inset
 import urllib.request
 import sys, os
 import tempfile
 
-# imposto parametri di stampa 
+# imposto parametri di plot
 plt.rcParams.update({
     "text.usetex": True,
     "font.family": "serif",
@@ -34,15 +33,16 @@ parteA = [
 ]
 
 parteB = [
+   # B1 
     ["https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/diapason.wav",
     "https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/pulita_semplice.wav",
     "https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/pulita_media.wav",
     "https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/pulita_difficile.wav",
     "https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/distorta.wav"],
-    
+   # B2
     ["https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/pulita_pezzo.wav",
     "https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/distorta_pezzo.wav"],
-    
+   # B3
     ["https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/primo.wav",
     "https://www.fisgeo.unipg.it/~duranti/laboratoriodue/laboratorio_24-25/_slides/secondo.wav"]
 ]
@@ -71,7 +71,6 @@ def apriAudio(nome_file):
     elif nome_file.endswith(".txt"):
         dati = np.loadtxt(nome_file)
         freq_camp = 44100  # Frequenza di campionamento predefinita
-    # Formato non supportato
     else:
         raise ValueError("Formato di file non supportato. Usa .wav o .txt.")
     
@@ -726,12 +725,12 @@ def separaStrumenti(frequenzaCampionamento, datiAudio, fasceFrequenze, cartellaO
 
 def esercitazioneA(parte):
     index = int(parte)
-    if index>=4 or x<=0:
+    if index>=4 or index<=0:
         print("Parte non riconosciuta.")
         print("Parti disponibili: 1, 2, 3")
         exit
     
-    file = [index-1]
+    file = parteA[index-1]
     print(f"Elaborazione del file: {file}")
     
     freq_camp, dati = apriAudio(file)
@@ -1110,7 +1109,7 @@ def esercitazioneB3(parte):
         plottaFFT(coeff_fft, pot)
         plottaSpettrogramma(dati, 44100)
         
-        separa
+        separaStrumenti(freq_camp, file, [(0,1500), (1500,10000)])
         
         # separare 0-1500 1500-
         # non so cosa siano le righe orizzontali, forse rumore di fondo - dio
@@ -1150,23 +1149,23 @@ def main():
         if ind>0 and ind<4:
             esercitazioneA(args.parte)
         else:
-            print("Per l'esercitazione A, specificare una parte (1, 2 o 3).")
+            print("Per l'esercitazione A, specificare una parte (1, 2 o 3 compresi).")
 
     elif args.esercitazione == "B1":
         if ind>0 and ind<6:
             esercitazioneB1(args.parte)
         else:
-            print("Per l'esercitazione B, specificare una parte (da 1 a 5).")
+            print("Per l'esercitazione B, specificare una parte (da 1 a 5 compresi).")
     elif args.esercitazione == "B2":
         if ind>0 and ind<3:
             esercitazioneB2(args.parte)
         else:
-            print("Per l'esercitazione B, specificare una parte (1 o 2).")
+            print("Per l'esercitazione B, specificare una parte (1 o 2 compresi).")
     elif args.esercitazione == "B3":
         if ind>0 and ind<3:
             esercitazioneB3(args.parte)
         else:
-            print("Per l'esercitazione B, specificare una parte (1 o 2).")
+            print("Per l'esercitazione B, specificare una parte (1 o 2 compresi).")
 
 if __name__ == "__main__":
     main()
