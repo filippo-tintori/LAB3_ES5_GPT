@@ -695,23 +695,23 @@ def separaStrumenti(frequenzaCampionamento, datiAudio, fasceFrequenze, cartellaO
     if not os.path.exists(cartellaOutput):
         os.makedirs(cartellaOutput)
     
+
     # FFT del segnale
-    fftCoeff, potenza = fftSegnale(datiAudio)
+    fftCoeff, potenza = fftSegnaleB1(datiAudio)
     frequenze = np.fft.fftfreq(len(datiAudio), d=1 / frequenzaCampionamento)
     
     # Separazione basata su fasce di frequenza
     for indice, (frequenzaMin, frequenzaMax) in enumerate(fasceFrequenze):
         # Crea un filtro per la fascia di frequenze
         filtro = (frequenze >= frequenzaMin) & (frequenze <= frequenzaMax)
-        filtroCompleto = np.concatenate([filtro, filtro[::-1]])
-        fftFiltrata = fftCoeff * filtroCompleto
+        fftFiltrata = fftCoeff * filtro
         
         # Ricostruzione del segnale
         segnaleFiltrato = np.fft.ifft(fftFiltrata).real
         
         # Salva il risultato
         nomeFileOutput = os.path.join(cartellaOutput, f"strumento_fascia_{indice + 1}.wav")
-        wav.write(nomeFileOutput, frequenzaCampionamento, (segnaleFiltrato * 32767).astype(np.int16))
+        wav.write(nomeFileOutput, frequenzaCampionamento, (segnaleFiltrato).astype(np.int16))
         print(f"File salvato: {nomeFileOutput}")
 
 
@@ -1109,7 +1109,7 @@ def esercitazioneB3(parte):
         plottaFFT(coeff_fft, pot)
         plottaSpettrogramma(dati, 44100)
         
-        separaStrumenti(freq_camp, file, [(0,1500), (1500,10000)])
+        separaStrumenti(freq_camp, dati, [(0,1500), (1500,10000)])
         
         # separare 0-1500 1500-
         # non so cosa siano le righe orizzontali, forse rumore di fondo - dio
