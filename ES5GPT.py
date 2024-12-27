@@ -391,11 +391,11 @@ def mascheraRumoreB(fft_coeff, indice):
     if indice == 2:
         alto = 1e4
     if indice == 3:
-        alto = 0
+        alto = 2e4
     if indice == 4:
-        alto = 0
+        alto = 1.5e4
     if indice == 5:
-        alto = 0
+        alto = 7e4
     
     
     potenza = np.abs(fft_coeff) ** 2
@@ -1084,6 +1084,7 @@ def esercitazioneB2(parte):
         
         coeff_fft, pot = fftSegnaleB1(dati)
         plottaFFT(coeff_fft, pot)
+        # mascherare, sintetizzare e produrre un file audio
         
         
         
@@ -1126,7 +1127,7 @@ def esercitazioneB3(parte):
         plottaFFT(coeff_fft, pot)
         plottaSpettrogramma(dati, 44100)
         
-        separaStrumenti(freq_camp, dati, [(200,1500), (2000, 10000)], URL+"AudioSeparati_B3_1")
+        separaStrumenti(freq_camp, dati, [(150, 1500), (2000, 10000)], URL+"AudioSeparati_B3_1")
 
     elif parte == "2":
         freq_camp, dati = apriAudio(file)
@@ -1139,7 +1140,7 @@ def esercitazioneB3(parte):
         plottaFFT(coeff_fft, pot)
         plottaSpettrogramma(dati, 44100)
         
-        separaStrumenti(freq_camp, dati, [(100,500), (800, 10000)], URL+"AudioSeparati_B3_2")
+        separaStrumenti(freq_camp, dati, [(100, 500), (800, 10000)], URL+"AudioSeparati_B3_2")
 
     else:
         print("Parte non riconosciuta.")
