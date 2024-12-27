@@ -710,7 +710,7 @@ def separaStrumenti(frequenzaCampionamento, datiAudio, fasceFrequenze, cartellaO
         segnaleFiltrato = np.fft.ifft(fftFiltrata).real
         
         # Salva il risultato
-        nomeFileOutput = os.path.join(cartellaOutput, f"strumento_fascia_{indice + 1}.wav")
+        nomeFileOutput = os.path.join(cartellaOutput, f"{indice + 1}.wav")
         wav.write(nomeFileOutput, frequenzaCampionamento, (segnaleFiltrato).astype(np.int16))
         print(f"File salvato: {nomeFileOutput}")
 
