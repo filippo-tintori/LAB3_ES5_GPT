@@ -1109,7 +1109,7 @@ def esercitazioneB3(parte):
         plottaFFT(coeff_fft, pot)
         plottaSpettrogramma(dati, 44100)
         
-        separaStrumenti(freq_camp, dati, [(0,1500), (1500,10000)])
+        separaStrumenti(freq_camp, dati, [(0,1500), (1500,10000)], "AudioSeparati_B3_1")
         
         # separare 0-1500 1500-
         # non so cosa siano le righe orizzontali, forse rumore di fondo - dio
@@ -1124,6 +1124,8 @@ def esercitazioneB3(parte):
         coeff_fft, pot = fftSegnaleB1(dati)
         plottaFFT(coeff_fft, pot)
         plottaSpettrogramma(dati, 44100)
+        
+        separaStrumenti(freq_camp, dati, [(0,1500), (1500,10000)], "AudioSeparati_B3_2")
 
     else:
         print("Parte non riconosciuta.")
