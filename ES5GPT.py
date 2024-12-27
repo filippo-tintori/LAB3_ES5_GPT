@@ -279,8 +279,19 @@ def zoomPicchiFrequenza(potenza, indice, frequenza_campionamento=44100, zoom_ran
 
 
 def plottaSpettrogramma(datiAudio, frequenzaCampionamento, titolo="Spettrogramma"):
+    """
+    Genera e visualizza lo spettrogramma di un segnale audio.
+
+    Args:
+        datiAudio (array): Segnale audio da analizzare, rappresentato come un array di campioni temporali.
+        frequenzaCampionamento (int): Frequenza di campionamento del segnale (Hz).
+        titolo (str): Titolo del grafico dello spettrogramma. Default "Spettrogramma".
+    """
+
     plt.figure(figsize=(10, 6))
     plt.specgram(datiAudio, Fs=frequenzaCampionamento, NFFT=1024, noverlap=512, cmap='viridis')
+    # 1024        punti della trasformata usati
+    # noverlap    rappresenta quanti campioni della finestra attuale sono condivisi con la finestra precedente.
     plt.title(titolo)
     plt.xlabel("Tempo (s)")
     plt.ylabel("Frequenza (Hz)")
@@ -1042,7 +1053,6 @@ def esercitazioneB1(parte):
         
         #riascoltaSegnale(segnale_fft4)
         salvaCanale(segnale_fft4, 44100, "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B5_4.wav")
-
         
     else:
         print("Parte non riconosciuta.")
@@ -1109,7 +1119,7 @@ def esercitazioneB3(parte):
         plottaFFT(coeff_fft, pot)
         plottaSpettrogramma(dati, 44100)
         
-        separaStrumenti(freq_camp, dati, [(200,1500), (2000,10000)], "AudioSeparati_B3_1")
+        separaStrumenti(freq_camp, dati, [(200,1500), (2000, 10000)], "AudioSeparati_B3_1")
         
         # separare 0-1500 1500-
         # non so cosa siano le righe orizzontali, forse rumore di fondo - dio
@@ -1125,7 +1135,7 @@ def esercitazioneB3(parte):
         plottaFFT(coeff_fft, pot)
         plottaSpettrogramma(dati, 44100)
         
-        separaStrumenti(freq_camp, dati, [(100,500), (800,10000)], "AudioSeparati_B3_2")
+        separaStrumenti(freq_camp, dati, [(100,500), (800, 10000)], "AudioSeparati_B3_2")
 
     else:
         print("Parte non riconosciuta.")
