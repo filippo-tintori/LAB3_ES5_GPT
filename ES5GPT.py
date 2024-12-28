@@ -238,6 +238,10 @@ def zoomPicchiFrequenza(potenza, indice, frequenza_campionamento=44100, zoom_ran
         alto = 1.3e6
     if indice == 5:
         alto = 0.18e8
+    if indice == 11:
+        alto = 0
+    if indice == 12:
+        alto = 0
     
     # Trovo i picchi
     peaks, _ = find_peaks(potenza, height=alto)  # Soglia minima per i picchi
@@ -399,7 +403,7 @@ def mascheraRumoreB(fft_coeff, indice):
     if indice == 4:
         alto = 1.3e6
     if indice == 5:
-        alto = 0.3e8
+        alto = 0.18e8
     if indice == 11:
         alto = 5e6
     
@@ -437,45 +441,6 @@ def mascheraRumoreB(fft_coeff, indice):
         
         # esercizio ultimo
         
-        # prendo un picco prima del primo picco
-        
-        """
-        soglia2  = 2.5e5
-        
-        i = piccoMax
-        while i <= piccoMax:
-            if potenza[i] <= soglia2: # prendo i e i+1
-                break
-            i -= 1
-        
-        j = piccoMax
-        while j <= piccoMax:
-            if potenza[j] <= soglia2: # prendo j e j-1
-                break
-            j += 1
-        
-        indiciUltimo = picchi3 + [i, i+1, j, j-1]
-        
-        for ind in indiciUltimo:
-            fft_coeff_filtrati3[ind] = fft_coeff[ind]
-        
-        soglia3 = 3e4
-        
-        k = piccoMed
-        while k >= piccoMed:
-            if potenza[k] <= soglia3: # prendo k-1
-                break
-            k += 1
-        
-        p, _ = find_peaks(potenza[freqAIndice(potenza, 882):freqAIndice(potenza, 1977)], height=1e3)
-        p1=p[0]
-        p2=p[3]
-        
-        picchiScelti4 = [i, piccoMax, j, piccoMed, k, p1, p2, piccoMin, piccoMin2 ]
-        
-        for pic in picchiScelti4:
-            fft_coeff_filtrati4[pic] = fft_coeff[pic]
-        """
         picchiScelti4 = [piccoMax-2, piccoMax-1, piccoMax, piccoMax +1 , piccoMax +2 , 
                          piccoMed -2, piccoMed -1, piccoMed, piccoMed +1, piccoMed + 2, 
                          piccoMin -1, piccoMin, piccoMin +1 , 
@@ -507,43 +472,6 @@ def mascheraRumoreB(fft_coeff, indice):
         
         # prendo un picco prima del primo picco
         
-        """
-        soglia2  = 2.5e5
-        
-        i = piccoMax
-        while i <= piccoMax:
-            if potenza[i] <= soglia2: # prendo i e i+1
-                break
-            i -= 1
-        
-        j = piccoMax
-        while j <= piccoMax:
-            if potenza[j] <= soglia2: # prendo j e j-1
-                break
-            j += 1
-        
-        indiciUltimo = picchi3 + [i, i+1, j, j-1]
-        
-        for ind in indiciUltimo:
-            fft_coeff_filtrati3[ind] = fft_coeff[ind]
-        
-        soglia3 = 3e4
-        
-        k = piccoMed
-        while k >= piccoMed:
-            if potenza[k] <= soglia3: # prendo k-1
-                break
-            k += 1
-        
-        p, _ = find_peaks(potenza[freqAIndice(potenza, 882):freqAIndice(potenza, 1977)], height=1e3)
-        p1=p[0]
-        p2=p[3]
-        
-        picchiScelti4 = [i, piccoMax, j, piccoMed, k, p1, p2, piccoMin, piccoMin2 ]
-        
-        for pic in picchiScelti4:
-            fft_coeff_filtrati4[pic] = fft_coeff[pic]
-        """
         picchiScelti4 = [piccoMax-2, piccoMax-1, piccoMax, piccoMax + 1 , piccoMax + 2 , 
                          piccoMed - 2, piccoMed -1, piccoMed, piccoMed +1, piccoMed + 2, 
                          piccoMin - 1, piccoMin, piccoMin +1 , 
@@ -615,12 +543,39 @@ def mascheraRumoreB(fft_coeff, indice):
             fft_coeff_filtrati4[pic] = fft_coeff[pic]
     
     if indice == 5:
-        soglia = 0
+        soglia = 0.18e8
+        
+        picco1 = indiciPicchi[3]
+        
+        fft_coeff_filtrati[picco1] = fft_coeff[picco1]
+        
+        picco2 = indiciPicchi[-2]
+        
+        picchi2 = [picco1, picco2]
+        
+        for pic in picchi2:
+            fft_coeff_filtrati2[pic] = fft_coeff[pic]
+            
+        for pic in indiciPicchi:
+            fft_coeff_filtrati3[pic] = fft_coeff[pic]
+            
+        picchi4 = [
+            indiciPicchi[0] - 2, indiciPicchi[0] - 1, indiciPicchi[0], indiciPicchi[0] + 1, indiciPicchi[0] + 2,
+            indiciPicchi[1] - 2, indiciPicchi[1] - 1, indiciPicchi[1], indiciPicchi[1] + 1, indiciPicchi[1] + 2,
+            indiciPicchi[2] - 2, indiciPicchi[2] - 1, indiciPicchi[2], indiciPicchi[2] + 1, indiciPicchi[2] + 2,
+            indiciPicchi[3] - 2, indiciPicchi[3] - 1, indiciPicchi[3], indiciPicchi[3] + 1, indiciPicchi[3] + 2,
+            indiciPicchi[4] - 2, indiciPicchi[4] - 1, indiciPicchi[4], indiciPicchi[4] + 1, indiciPicchi[4] + 2,
+            indiciPicchi[5] - 2, indiciPicchi[5] - 1, indiciPicchi[5], indiciPicchi[5] + 1, indiciPicchi[5] + 2,
+            indiciPicchi[6] - 2, indiciPicchi[6] - 1, indiciPicchi[6], indiciPicchi[6] + 1, indiciPicchi[6] + 2,
+        ]
+        
+        for pic in picchi4:
+            fft_coeff_filtrati4[pic] = fft_coeff[pic]
         
     if indice == 11:
         soglia = 5e6
         
-    if indice == 11:
+    if indice == 12:
         soglia = 5e6
     
     
