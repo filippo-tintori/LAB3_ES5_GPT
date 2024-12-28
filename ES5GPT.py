@@ -241,7 +241,7 @@ def zoomPicchiFrequenza(potenza, indice, frequenza_campionamento=44100, zoom_ran
     if indice == 11:
         alto = 3e6
     if indice == 12:
-        alto = 0.17e8
+        alto = 0.2e8
     
     # Trovo i picchi
     peaks, _ = find_peaks(potenza, height=alto)  # Soglia minima per i picchi
@@ -411,7 +411,7 @@ def mascheraRumoreB(fft_coeff, indice):
     if indice == 11:
         alto = 3e6
     if indice == 12:
-        alto = 0.17e8
+        alto = 0.19e8
     
     potenza = np.abs(fft_coeff) ** 2
     
@@ -1154,8 +1154,8 @@ def esercitazioneB2(parte):
             segnale_fft.append( risintetizzaSegnale(FFT) )
             segnale_seni_coseni.append( risintetizzaSeniCoseni(FFT) )
             
-            plottaRisintonizzataB(dati, segnale_fft[i], index=index+10 )        # CAMBIARE FUNZIONE CON NUOVI INDICI
-            plottaRisintonizzataB(dati, segnale_seni_coseni[i], index=index+10 )   # CAMBIARE FUNZIONE CON NUOVI INDICI
+            plottaRisintonizzataB(dati, segnale_fft[i], index=index+10 )
+            plottaRisintonizzataB(dati, segnale_seni_coseni[i], index=index+10 )
 
             salvaCanale(segnale_fft[i], 44100, URL+f"1/{i+1}.wav")
         
@@ -1169,12 +1169,14 @@ def esercitazioneB2(parte):
         coeff_fft, pot = fftSegnaleB1(dati)
         plottaFFT(coeff_fft, pot)
         
+        zoomPicchiFrequenza(pot, index+10)
+        
         indiciPicchi, _ = find_peaks(pot, height=5e6)
         
         picchi = pot[indiciPicchi]
         print(f"Picchi trovati: {picchi}")
         
-        fft1, fft2, fft3, fft4 = mascheraRumoreB(coeff_fft, index+10) # 12
+        fft = mascheraRumoreB(coeff_fft, index+10) # 12
         
         segnale_fft = []
         segnale_seni_coseni = []
