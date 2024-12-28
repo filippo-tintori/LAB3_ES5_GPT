@@ -606,7 +606,7 @@ def mascheraRumoreB(fft_coeff, indice):
             fft_coeff_filtrati4[pic+2] = fft_coeff[pic+2]
         
         
-    if indice == 12: # MODIFICARE
+    if indice == 12:
         soglia = 0.3e8
 
         picco1 = indiciPicchi[2]
@@ -1220,7 +1220,7 @@ def esercitazioneB3(parte):
         plottaSpettrogramma(dati, 44100)
         
         separaStrumenti(freq_camp, dati, [(150, 1500), (2000, 10000)], URL+"AudioSeparati_B3_1")
-
+    
     elif parte == "2":
         freq_camp, dati = apriAudio(file)
         dati=dati[:,0]
