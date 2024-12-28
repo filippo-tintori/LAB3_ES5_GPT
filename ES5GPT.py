@@ -235,7 +235,7 @@ def zoomPicchiFrequenza(potenza, indice, frequenza_campionamento=44100, zoom_ran
     if indice == 3:
         alto = 2e6
     if indice == 4:
-        alto = 1e6
+        alto = 1.3e6
     if indice == 5:
         alto = 1e6
     
@@ -397,9 +397,9 @@ def mascheraRumoreB(fft_coeff, indice):
     if indice == 3:
         alto = 2e6
     if indice == 4:
-        alto = 1.5e4
+        alto = 1.2e6
     if indice == 5:
-        alto = 7e4
+        alto = 7e5
     if indice == 11:
         alto = 5e6
     
