@@ -239,7 +239,7 @@ def zoomPicchiFrequenza(potenza, indice, frequenza_campionamento=44100, zoom_ran
     if indice == 5:
         alto = 0.18e8
     if indice == 11:
-        alto = 2.7e6
+        alto = 3e6
     if indice == 12:
         alto = 0.17e8
     
@@ -409,7 +409,7 @@ def mascheraRumoreB(fft_coeff, indice):
     if indice == 5:
         alto = 0.18e8
     if indice == 11:
-        alto = 2.7e6
+        alto = 3e6
     if indice == 12:
         alto = 0.17e8
     
@@ -420,9 +420,9 @@ def mascheraRumoreB(fft_coeff, indice):
     if potenza[0] > alto:
         indiciPicchi = np.insert(indiciPicchi, 0, 0)
     
-    
-    print(f"Picchi trovati: {picchi}")
     picchi = potenza[indiciPicchi]
+    print(f"Picchi trovati: {picchi}")
+    
     
     fft_coeff_filtrati = np.zeros_like(fft_coeff) 
     fft_coeff_filtrati2 = np.zeros_like(fft_coeff) 
@@ -582,13 +582,13 @@ def mascheraRumoreB(fft_coeff, indice):
             fft_coeff_filtrati4[pic] = fft_coeff[pic]
         
     if indice == 11:
-        soglia = 2.7e6
+        soglia = 3e6
         
         picco1 = indiciPicchi[0]
         
         fft_coeff_filtrati[picco1] = fft_coeff[picco1]
         
-        picco2 = indiciPicchi[9]
+        picco2 = indiciPicchi[6]
         
         picchi2 = [picco1, picco2]
         
@@ -880,7 +880,7 @@ def esercitazioneB1(parte):
         
         #riascoltaSegnale(segnale_fft4)
         salvaCanale(segnale_fft4, 44100, URL+"B11_4.wav")
-
+        
         
     elif parte == "2":
         freq_camp, dati = apriAudio(file)
@@ -1137,9 +1137,7 @@ def esercitazioneB2(parte):
         coeff_fft, pot = fftSegnaleB1(dati)
         plottaFFT(coeff_fft, pot)
         
-        
         zoomPicchiFrequenza(pot, index+10)
-        
         
         indiciPicchi, _ = find_peaks(pot, height=5e6)
         
@@ -1157,9 +1155,9 @@ def esercitazioneB2(parte):
             segnale_seni_coseni.append( risintetizzaSeniCoseni(FFT) )
             
             plottaRisintonizzataB(dati, segnale_fft[i], index=index+10 )        # CAMBIARE FUNZIONE CON NUOVI INDICI
-            plottaRisintonizzataB(dati, segnale_seni_coseni, index=index+10 )   # CAMBIARE FUNZIONE CON NUOVI INDICI
+            plottaRisintonizzataB(dati, segnale_seni_coseni[i], index=index+10 )   # CAMBIARE FUNZIONE CON NUOVI INDICI
 
-            salvaCanale(segnale_fft[i], 44100, URL+f"{i+1}.wav")
+            salvaCanale(segnale_fft[i], 44100, URL+f"1/{i+1}.wav")
         
     elif parte == "2":
         freq_camp, dati = apriAudio(file)
@@ -1188,7 +1186,7 @@ def esercitazioneB2(parte):
             plottaRisintonizzataB(dati, segnale_fft[i], index=index+10 )        # CAMBIARE FUNZIONE CON NUOVI INDICI
             plottaRisintonizzataB(dati, segnale_seni_coseni, index=index+10 )   # CAMBIARE FUNZIONE CON NUOVI INDICI
 
-            salvaCanale(segnale_fft[i], 44100, URL+f"{i+1}.wav")
+            salvaCanale(segnale_fft[i], 44100, URL+f"2/filtro{i+1}.wav")
         
     else:
         print("Parte non riconosciuta.")
