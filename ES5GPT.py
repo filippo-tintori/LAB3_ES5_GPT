@@ -395,7 +395,7 @@ def mascheraRumoreB(fft_coeff, indice):
     if indice == 2:
         alto = 1e4
     if indice == 3:
-        alto = 2e4
+        alto = 2e6
     if indice == 4:
         alto = 1.5e4
     if indice == 5:
@@ -577,7 +577,33 @@ def mascheraRumoreB(fft_coeff, indice):
             fft_coeff_filtrati4[pic] = fft_coeff[pic]
         
     if indice == 3:
-        soglia = 0
+        soglia = 2e6
+        
+        # 0,2,4,5,6
+        
+        picco1 = indiciPicchi[5]
+        
+        fft_coeff_filtrati[picco1] = fft_coeff[picco1]
+        
+        picco2 = indiciPicchi[2]
+        
+        picchi2 = [picco1, picco1]
+        
+        for pic in picchi2:
+            fft_coeff_filtrati2[pic] = fft_coeff[pic]
+        
+        picchi3 = [indiciPicchi[0], indiciPicchi[2], indiciPicchi[4], indiciPicchi[5], indiciPicchi[6]]
+        
+        for pic in picchi3:
+            fft_coeff_filtrati3[pic] = fft_coeff[pic]
+        
+        picchi4 = [
+            indiciPicchi[0] - 2, indiciPicchi[0] - 1, indiciPicchi[0], indiciPicchi[0] + 1, indiciPicchi[0] + 2,
+            indiciPicchi[2] - 2, indiciPicchi[2] - 1, indiciPicchi[2], indiciPicchi[2] + 1, indiciPicchi[2] + 2,
+            indiciPicchi[4] - 2, indiciPicchi[4] - 1, indiciPicchi[4], indiciPicchi[4] + 1, indiciPicchi[4] + 2,
+            indiciPicchi[5] - 2, indiciPicchi[5] - 1, indiciPicchi[5], indiciPicchi[5] + 1, indiciPicchi[5] + 2,
+            indiciPicchi[6] - 2, indiciPicchi[6] - 1, indiciPicchi[6], indiciPicchi[6] + 1, indiciPicchi[6] + 2,
+        ]
     
     if indice == 4:
         soglia = 0
