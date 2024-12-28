@@ -237,7 +237,7 @@ def zoomPicchiFrequenza(potenza, indice, frequenza_campionamento=44100, zoom_ran
     if indice == 4:
         alto = 1.3e6
     if indice == 5:
-        alto = 1e6
+        alto = 0.18e8
     
     # Trovo i picchi
     peaks, _ = find_peaks(potenza, height=alto)  # Soglia minima per i picchi
@@ -399,7 +399,7 @@ def mascheraRumoreB(fft_coeff, indice):
     if indice == 4:
         alto = 1.3e6
     if indice == 5:
-        alto = 7e5
+        alto = 0.3e8
     if indice == 11:
         alto = 5e6
     
