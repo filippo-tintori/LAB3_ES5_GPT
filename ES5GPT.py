@@ -587,7 +587,9 @@ def mascheraRumoreB(fft_coeff, indice):
         
     if indice == 11:
         soglia = 5e6
-    
+        
+    if indice == 11:
+        soglia = 5e6
     
     
     return fft_coeff_filtrati, fft_coeff_filtrati2, fft_coeff_filtrati3, fft_coeff_filtrati4
@@ -1085,6 +1087,8 @@ def esercitazioneB2(parte):
     index = int(parte)
     file = parteB[1][index-1]
     
+    URL = "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B2/"
+    
     if parte == "1":
         freq_camp, dati = apriAudio(file)
         dati=dati[:,0]
@@ -1094,17 +1098,28 @@ def esercitazioneB2(parte):
         
         coeff_fft, pot = fftSegnaleB1(dati)
         plottaFFT(coeff_fft, pot)
-        # mascherare, sintetizzare e produrre un file audio
+        
         potenza = np.abs(fft_coeff) ** 2
         indiciPicchi, _ = find_peaks(potenza, height=5e6)
         print(f"Picchi trovati: {picchi}")
         picchi = potenza[indiciPicchi]
         
-        mascheraRumoreB(coeff_fft, index+10)
+        fft = mascheraRumoreB(coeff_fft, index+10) # 11
+        # mascherare, sintetizzare e produrre un file audio
+        segnale_fft = risintetizzaSegnale(fft_filtrato)
+        segnale_seni_coseni = risintetizzaSeniCoseni(fft_filtrato)
         
+        segnale_fft = []
+        segnale_seni_coseni = []
         
-        
-        
+        for i, FFT in enumerate(fft):
+            segnale_fft.append( risintetizzaSegnale(FFT) )
+            segnale_seni_coseni.append( risintetizzaSeniCoseni(FFT) )
+            
+            plottaRisintonizzataB(dati, segnale_fft[i], index=index+10 )        # CAMBIARE FUNZIONE CON NUOVI INDICI
+            plottaRisintonizzataB(dati, segnale_seni_coseni, index=index+10 )   # CAMBIARE FUNZIONE CON NUOVI INDICI
+
+            salvaCanale(segnale_fft[i], 44100, URL+f"{i+1}.wav")
         
     elif parte == "2":
         freq_camp, dati = apriAudio(file)
@@ -1115,6 +1130,13 @@ def esercitazioneB2(parte):
         
         coeff_fft, pot = fftSegnaleB1(dati)
         plottaFFT(coeff_fft, pot)
+        
+        potenza = np.abs(fft_coeff) ** 2
+        indiciPicchi, _ = find_peaks(potenza, height=5e6)
+        print(f"Picchi trovati: {picchi}")
+        picchi = potenza[indiciPicchi]
+        
+        fft1, fft2, fft3, fft4 = mascheraRumoreB(coeff_fft, index+10) # 12
         
     else:
         print("Parte non riconosciuta.")
