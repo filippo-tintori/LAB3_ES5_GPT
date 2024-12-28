@@ -231,8 +231,12 @@ def zoomPicchiFrequenza(potenza, indice, frequenza_campionamento=44100, zoom_ran
     if indice == 1:
         alto = 1e5
     if indice == 2:
-        alto = 1e4
+        alto = 1e6
     if indice == 3:
+        alto = 2e6
+    if indice == 4:
+        alto = 1e6
+    if indice == 5:
         alto = 1e6
     
     # Trovo i picchi
@@ -272,7 +276,7 @@ def zoomPicchiFrequenza(potenza, indice, frequenza_campionamento=44100, zoom_ran
         axs[i].set_ylabel("Potenza")
         axs[i].legend()
         axs[i].grid(True)
-
+        
     # Mostra il grafico
     plt.suptitle("Zoom sui picchi della potenza")
     plt.show()
@@ -396,7 +400,8 @@ def mascheraRumoreB(fft_coeff, indice):
         alto = 1.5e4
     if indice == 5:
         alto = 7e4
-    
+    if indice == 11:
+        alto = 5e6
     
     potenza = np.abs(fft_coeff) ** 2
     
@@ -404,7 +409,6 @@ def mascheraRumoreB(fft_coeff, indice):
     
     picchi = potenza[indiciPicchi]
     print(f"Picchi trovati: {picchi}")
-    
     
     
     fft_coeff_filtrati = np.zeros_like(fft_coeff) 
@@ -573,16 +577,22 @@ def mascheraRumoreB(fft_coeff, indice):
             fft_coeff_filtrati4[pic] = fft_coeff[pic]
         
     if indice == 3:
-        pass
+        soglia = 0
     
     if indice == 4:
-        pass
+        soglia = 0
     
     if indice == 5:
-        pass
+        soglia = 0
         
+    if indice == 11:
+        soglia = 5e6
+    
+    
+    
     return fft_coeff_filtrati, fft_coeff_filtrati2, fft_coeff_filtrati3, fft_coeff_filtrati4
-
+    
+        
 
 
 ##############################
@@ -773,7 +783,7 @@ def esercitazioneB1(parte):
     index = int(parte)
     file = parteB[0][index-1]
     
-    URL = "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/es_B1/"
+    URL = "/Users/filippo/Documenti/UniPG/3°Anno/Laboratorio di Elettronica e Tecniche di Acquisizione Dati/Relazione5/LAB3_ES5_GPT/B1wav/"
     
     if parte == "1":
         freq_camp, dati = apriAudio(file)
@@ -782,7 +792,7 @@ def esercitazioneB1(parte):
         dati = dati / 32767 # norm
         plottaWAV(dati)
         
-        salvaCanale(dati, 44100, URL+"B1_copia.wav")
+        salvaCanale(dati, 44100, URL+"B11_copia.wav")
         coeff_fft, pot = fftSegnaleB1(dati)
         plottaFFT(coeff_fft, pot)
         #zoomPicchi(pot)
@@ -797,7 +807,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft)
-        salvaCanale(segnale_fft, 44100, URL+"B1_1.wav")
+        salvaCanale(segnale_fft, 44100, URL+"B11_1.wav")
         
         #parte 2
         segnale_fft2 = risintetizzaSegnale(fft_filtrato2)
@@ -807,7 +817,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni2, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft2)
-        salvaCanale(segnale_fft2, 44100, URL+"B1_2.wav")
+        salvaCanale(segnale_fft2, 44100, URL+"B11_2.wav")
 
         
         #parte 3
@@ -818,7 +828,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni3, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft3)
-        salvaCanale(segnale_fft3, 44100, URL+"B1_3.wav")
+        salvaCanale(segnale_fft3, 44100, URL+"B11_3.wav")
 
         
         #parte 4
@@ -829,7 +839,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni4, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft4)
-        salvaCanale(segnale_fft4, 44100, URL+"B1_4.wav")
+        salvaCanale(segnale_fft4, 44100, URL+"B11_4.wav")
 
         
     elif parte == "2":
@@ -839,7 +849,7 @@ def esercitazioneB1(parte):
         dati = dati / 32767 # norm
         plottaWAV(dati)
         
-        salvaCanale(dati, 44100, URL+"B2_copia.wav")
+        salvaCanale(dati, 44100, URL+"B12_copia.wav")
         coeff_fft, pot = fftSegnaleB1(dati)
         plottaFFT(coeff_fft, pot)
         #zoomPicchi(pot)
@@ -854,7 +864,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft)
-        salvaCanale(segnale_fft, 44100, URL+"B2_1.wav")
+        salvaCanale(segnale_fft, 44100, URL+"B12_1.wav")
         
         #parte 2
         segnale_fft2 = risintetizzaSegnale(fft_filtrato2)
@@ -864,7 +874,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni2, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft2)
-        salvaCanale(segnale_fft2, 44100, URL+"B2_2.wav")
+        salvaCanale(segnale_fft2, 44100, URL+"B12_2.wav")
 
         
         #parte 3
@@ -875,7 +885,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni3, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft3)
-        salvaCanale(segnale_fft3, 44100, URL+"B2_3.wav")
+        salvaCanale(segnale_fft3, 44100, URL+"B12_3.wav")
 
         
         #parte 4
@@ -886,7 +896,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni4, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft4)
-        salvaCanale(segnale_fft4, 44100, URL+"B2_4.wav")
+        salvaCanale(segnale_fft4, 44100, URL+"B12_4.wav")
 
         
     elif parte == "3":
@@ -896,7 +906,7 @@ def esercitazioneB1(parte):
         dati = dati / 32767 # norm
         plottaWAV(dati)
         
-        salvaCanale(dati, 44100, URL+"B3_copia.wav")
+        salvaCanale(dati, 44100, URL+"B13_copia.wav")
         coeff_fft, pot = fftSegnaleB1(dati)
         plottaFFT(coeff_fft, pot)
         #zoomPicchi(pot)
@@ -911,7 +921,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft)
-        salvaCanale(segnale_fft, 44100, "B3_1.wav")
+        salvaCanale(segnale_fft, 44100, "B13_1.wav")
         
         #parte 2
         segnale_fft2 = risintetizzaSegnale(fft_filtrato2)
@@ -921,7 +931,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni2, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft2)
-        salvaCanale(segnale_fft2, 44100, "B3_2.wav")
+        salvaCanale(segnale_fft2, 44100, "B13_2.wav")
 
         
         #parte 3
@@ -932,7 +942,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni3, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft3)
-        salvaCanale(segnale_fft3, 44100, "B3_3.wav")
+        salvaCanale(segnale_fft3, 44100, "B13_3.wav")
 
         
         #parte 4
@@ -943,7 +953,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni4, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft4)
-        salvaCanale(segnale_fft4, 44100, "B3_4.wav")
+        salvaCanale(segnale_fft4, 44100, "B13_4.wav")
 
         
     elif parte == "4":
@@ -953,7 +963,7 @@ def esercitazioneB1(parte):
         dati = dati / 32767 # norm
         plottaWAV(dati)
         
-        salvaCanale(dati, 44100, "B4_copia.wav")
+        salvaCanale(dati, 44100, "B14_copia.wav")
         coeff_fft, pot = fftSegnaleB1(dati)
         plottaFFT(coeff_fft, pot)
         #zoomPicchi(pot)
@@ -968,7 +978,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft)
-        salvaCanale(segnale_fft, 44100, "B4_1.wav")
+        salvaCanale(segnale_fft, 44100, "B14_1.wav")
         
         #parte 2
         segnale_fft2 = risintetizzaSegnale(fft_filtrato2)
@@ -978,7 +988,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni2, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft2)
-        salvaCanale(segnale_fft2, 44100, "B4_2.wav")
+        salvaCanale(segnale_fft2, 44100, "B14_2.wav")
 
         
         #parte 3
@@ -989,7 +999,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni3, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft3)
-        salvaCanale(segnale_fft3, 44100, "B4_3.wav")
+        salvaCanale(segnale_fft3, 44100, "B14_3.wav")
 
         
         #parte 4
@@ -1000,7 +1010,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni4, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft4)
-        salvaCanale(segnale_fft4, 44100, "B4_4.wav")
+        salvaCanale(segnale_fft4, 44100, "B14_4.wav")
 
         
     elif parte == "5":
@@ -1010,7 +1020,7 @@ def esercitazioneB1(parte):
         dati = dati / 32767 # norm
         plottaWAV(dati)
         
-        salvaCanale(dati, 44100, "B5_copia.wav")
+        salvaCanale(dati, 44100, "B15_copia.wav")
         coeff_fft, pot = fftSegnaleB1(dati)
         plottaFFT(coeff_fft, pot)
         #zoomPicchi(pot)
@@ -1025,7 +1035,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft)
-        salvaCanale(segnale_fft, 44100, "B5_1.wav")
+        salvaCanale(segnale_fft, 44100, "B15_1.wav")
         
         #parte 2
         segnale_fft2 = risintetizzaSegnale(fft_filtrato2)
@@ -1035,7 +1045,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni2, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft2)
-        salvaCanale(segnale_fft2, 44100, "B5_2.wav")
+        salvaCanale(segnale_fft2, 44100, "B15_2.wav")
 
         
         #parte 3
@@ -1046,7 +1056,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni3, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft3)
-        salvaCanale(segnale_fft3, 44100, "B5_3.wav")
+        salvaCanale(segnale_fft3, 44100, "B15_3.wav")
 
         
         #parte 4
@@ -1057,7 +1067,7 @@ def esercitazioneB1(parte):
         plottaRisintonizzataB(dati, segnale_seni_coseni4, index=index) #seni e coseni
         
         #riascoltaSegnale(segnale_fft4)
-        salvaCanale(segnale_fft4, 44100, "B5_4.wav")
+        salvaCanale(segnale_fft4, 44100, "B15_4.wav")
         
     else:
         print("Parte non riconosciuta.")
@@ -1085,6 +1095,14 @@ def esercitazioneB2(parte):
         coeff_fft, pot = fftSegnaleB1(dati)
         plottaFFT(coeff_fft, pot)
         # mascherare, sintetizzare e produrre un file audio
+        potenza = np.abs(fft_coeff) ** 2
+        indiciPicchi, _ = find_peaks(potenza, height=5e6)
+        print(f"Picchi trovati: {picchi}")
+        picchi = potenza[indiciPicchi]
+        
+        mascheraRumoreB(coeff_fft, index+10)
+        
+        
         
         
         
