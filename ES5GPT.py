@@ -239,12 +239,16 @@ def zoomPicchiFrequenza(potenza, indice, frequenza_campionamento=44100, zoom_ran
     if indice == 5:
         alto = 0.18e8
     if indice == 11:
-        alto = 0
+        alto = 2.7e6
     if indice == 12:
         alto = 0
     
     # Trovo i picchi
     peaks, _ = find_peaks(potenza, height=alto)  # Soglia minima per i picchi
+    
+    if potenza[0] > alto:
+        peaks = np.insert(peaks, 0, 0)
+        
     freq_peaks = frequenze[peaks]
     potenza_peaks = potenza[peaks]
 
@@ -406,10 +410,15 @@ def mascheraRumoreB(fft_coeff, indice):
         alto = 0.18e8
     if indice == 11:
         alto = 5e6
+    if indice == 12:
+        alto = 0
     
     potenza = np.abs(fft_coeff) ** 2
     
     indiciPicchi, _ = find_peaks(potenza, height=alto)
+    
+    if potenza[0] > alto:
+        indiciPicchi = np.insert(indiciPicchi, 0, 0)
     
     picchi = potenza[indiciPicchi]
     print(f"Picchi trovati: {picchi}")
@@ -555,10 +564,10 @@ def mascheraRumoreB(fft_coeff, indice):
         
         for pic in picchi2:
             fft_coeff_filtrati2[pic] = fft_coeff[pic]
-            
+        
         for pic in indiciPicchi:
             fft_coeff_filtrati3[pic] = fft_coeff[pic]
-            
+        
         picchi4 = [
             indiciPicchi[0] - 2, indiciPicchi[0] - 1, indiciPicchi[0], indiciPicchi[0] + 1, indiciPicchi[0] + 2,
             indiciPicchi[1] - 2, indiciPicchi[1] - 1, indiciPicchi[1], indiciPicchi[1] + 1, indiciPicchi[1] + 2,
@@ -573,7 +582,21 @@ def mascheraRumoreB(fft_coeff, indice):
             fft_coeff_filtrati4[pic] = fft_coeff[pic]
         
     if indice == 11:
-        soglia = 5e6
+        soglia = 1.6e6
+        
+        picco1 = indicePicchi[3]
+        
+        fft_coeff_filtrati[picco1] = fft_coeff[picco1]
+        
+        picco2 = indiciPicchi[-2]
+        
+        picchi2 = [picco1, picco2]
+        
+        for pic in picchi2:
+            fft_coeff_filtrati2[pic] = fft_coeff[pic]
+        
+        for pic in indiciPicchi:
+            fft_coeff_filtrati3[pic] = fft_coeff[pic]
         
     if indice == 12:
         soglia = 5e6
@@ -1086,15 +1109,17 @@ def esercitazioneB2(parte):
         coeff_fft, pot = fftSegnaleB1(dati)
         plottaFFT(coeff_fft, pot)
         
-        potenza = np.abs(fft_coeff) ** 2
-        indiciPicchi, _ = find_peaks(potenza, height=5e6)
+        
+        zoomPicchiFrequenza(pot, index+10)
+        
+        
+        indiciPicchi, _ = find_peaks(pot, height=5e6)
+        
+        picchi = pot[indiciPicchi]
         print(f"Picchi trovati: {picchi}")
-        picchi = potenza[indiciPicchi]
         
         fft = mascheraRumoreB(coeff_fft, index+10) # 11
         # mascherare, sintetizzare e produrre un file audio
-        segnale_fft = risintetizzaSegnale(fft_filtrato)
-        segnale_seni_coseni = risintetizzaSeniCoseni(fft_filtrato)
         
         segnale_fft = []
         segnale_seni_coseni = []
