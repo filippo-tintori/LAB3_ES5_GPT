@@ -609,11 +609,11 @@ def mascheraRumoreB(fft_coeff, indice):
     if indice == 12: # MODIFICARE
         soglia = 0.3e8
 
-        picco1 = indiciPicchi[0]
+        picco1 = indiciPicchi[2]
         
         fft_coeff_filtrati[picco1] = fft_coeff[picco1]
         
-        picco2 = indiciPicchi[9]
+        picco2 = indiciPicchi[-2]
         
         picchi2 = [picco1, picco2]
         
@@ -1186,7 +1186,7 @@ def esercitazioneB2(parte):
             segnale_seni_coseni.append( risintetizzaSeniCoseni(FFT) )
             
             plottaRisintonizzataB(dati, segnale_fft[i], index=index+10 )        # CAMBIARE FUNZIONE CON NUOVI INDICI
-            plottaRisintonizzataB(dati, segnale_seni_coseni, index=index+10 )   # CAMBIARE FUNZIONE CON NUOVI INDICI
+            plottaRisintonizzataB(dati, segnale_seni_coseni[i], index=index+10 )   # CAMBIARE FUNZIONE CON NUOVI INDICI
 
             salvaCanale(segnale_fft[i], 44100, URL+f"2/filtro{i+1}.wav")
         
