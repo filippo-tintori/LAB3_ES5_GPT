@@ -397,7 +397,7 @@ def mascheraRumoreB(fft_coeff, indice):
     if indice == 3:
         alto = 2e6
     if indice == 4:
-        alto = 1.2e6
+        alto = 1.3e6
     if indice == 5:
         alto = 7e5
     if indice == 11:
@@ -423,20 +423,8 @@ def mascheraRumoreB(fft_coeff, indice):
         piccoMed = indiciPicchi[1]
         piccoMin = indiciPicchi[2]
         piccoMin2 = indiciPicchi[3]
-    
-        # DX
-        indice_destra = piccoMax
-        while indice_destra < len(potenza) - 1 and potenza[indice_destra] > soglia:
-            indice_destra += 1
-        indice_destra -= 1 # indice sopra la soglia
         
-        # SX
-        indice_sinistra = piccoMax
-        while indice_sinistra > 0 and potenza[indice_sinistra] > soglia:
-            indice_sinistra -= 1
-        indice_sinistra += 1  # indice sopra la soglia
-
-        fft_coeff_filtrati[indice_sinistra:indice_destra] = fft_coeff[indice_sinistra:indice_destra]
+        fft_coeff_filtrati[piccoMax] = fft_coeff[piccoMax]
         
         # prendo un punto e basta
         picchi2 = [piccoMax, piccoMed]
@@ -503,20 +491,8 @@ def mascheraRumoreB(fft_coeff, indice):
         piccoMed = indiciPicchi[1]
         piccoMin = indiciPicchi[2]
         piccoMin2 = indiciPicchi[3]
-    
-        # DX
-        indice_destra = piccoMax
-        while indice_destra < len(potenza) - 1 and potenza[indice_destra] > soglia:
-            indice_destra += 1
-        indice_destra -= 1 # indice sopra la soglia
-        
-        # SX
-        indice_sinistra = piccoMax
-        while indice_sinistra > 0 and potenza[indice_sinistra] > soglia:
-            indice_sinistra -= 1
-        indice_sinistra += 1  # indice sopra la soglia
 
-        fft_coeff_filtrati[indice_sinistra:indice_destra] = fft_coeff[indice_sinistra:indice_destra]
+        fft_coeff_filtrati[piccoMax] = fft_coeff[piccoMax]
         
         # prendo un punto e basta
         picchi2 = [piccoMax, piccoMed]
@@ -609,7 +585,34 @@ def mascheraRumoreB(fft_coeff, indice):
             fft_coeff_filtrati4[pic] = fft_coeff[pic]
     
     if indice == 4:
-        soglia = 0
+        soglia = 1.3e6
+        
+        picco1 = indiciPicchi[2]
+        
+        fft_coeff_filtrati[picco1] = fft_coeff[picco1]
+        
+        picco2 = indiciPicchi[-1]
+        
+        picchi2 = [ picco1, picco2]
+        
+        for pic in picchi2:
+            fft_coeff_filtrati2[pic] = fft_coeff[pic]
+            
+        for pic in indiciPicchi:
+            fft_coeff_filtrati3[pic] = fft_coeff[pic]
+            
+        picchi4 = [
+            indiciPicchi[0] - 2, indiciPicchi[0] - 1, indiciPicchi[0], indiciPicchi[0] + 1, indiciPicchi[0] + 2,
+            indiciPicchi[1] - 2, indiciPicchi[1] - 1, indiciPicchi[1], indiciPicchi[1] + 1, indiciPicchi[1] + 2,
+            indiciPicchi[2] - 2, indiciPicchi[2] - 1, indiciPicchi[2], indiciPicchi[2] + 1, indiciPicchi[2] + 2,
+            indiciPicchi[3] - 2, indiciPicchi[3] - 1, indiciPicchi[3], indiciPicchi[3] + 1, indiciPicchi[3] + 2,
+            indiciPicchi[4] - 2, indiciPicchi[4] - 1, indiciPicchi[4], indiciPicchi[4] + 1, indiciPicchi[4] + 2,
+            indiciPicchi[5] - 2, indiciPicchi[5] - 1, indiciPicchi[5], indiciPicchi[5] + 1, indiciPicchi[5] + 2,
+            indiciPicchi[6] - 2, indiciPicchi[6] - 1, indiciPicchi[6], indiciPicchi[6] + 1, indiciPicchi[6] + 2,
+        ]
+        
+        for pic in picchi4:
+            fft_coeff_filtrati4[pic] = fft_coeff[pic]
     
     if indice == 5:
         soglia = 0
