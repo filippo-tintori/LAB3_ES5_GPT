@@ -241,7 +241,7 @@ def zoomPicchiFrequenza(potenza, indice, frequenza_campionamento=44100, zoom_ran
     if indice == 11:
         alto = 2.7e6
     if indice == 12:
-        alto = 0
+        alto = 0.17e8
     
     # Trovo i picchi
     peaks, _ = find_peaks(potenza, height=alto)  # Soglia minima per i picchi
@@ -411,7 +411,7 @@ def mascheraRumoreB(fft_coeff, indice):
     if indice == 11:
         alto = 2.7e6
     if indice == 12:
-        alto = 0
+        alto = 0.17e8
     
     potenza = np.abs(fft_coeff) ** 2
     
@@ -420,9 +420,9 @@ def mascheraRumoreB(fft_coeff, indice):
     if potenza[0] > alto:
         indiciPicchi = np.insert(indiciPicchi, 0, 0)
     
-    picchi = potenza[indiciPicchi]
-    print(f"Picchi trovati: {picchi}")
     
+    print(f"Picchi trovati: {picchi}")
+    picchi = potenza[indiciPicchi]
     
     fft_coeff_filtrati = np.zeros_like(fft_coeff) 
     fft_coeff_filtrati2 = np.zeros_like(fft_coeff) 
@@ -584,9 +584,7 @@ def mascheraRumoreB(fft_coeff, indice):
     if indice == 11:
         soglia = 2.7e6
         
-        # 
-        
-        picco1 = indicePicchi[0]
+        picco1 = indiciPicchi[0]
         
         fft_coeff_filtrati[picco1] = fft_coeff[picco1]
         
@@ -599,10 +597,38 @@ def mascheraRumoreB(fft_coeff, indice):
         
         for pic in indiciPicchi:
             fft_coeff_filtrati3[pic] = fft_coeff[pic]
+            
+        for pic in indiciPicchi:
+            fft_coeff_filtrati4[pic-2] = fft_coeff[pic-2]
+            fft_coeff_filtrati4[pic-1] = fft_coeff[pic-1]
+            fft_coeff_filtrati4[pic]   = fft_coeff[pic]
+            fft_coeff_filtrati4[pic+1] = fft_coeff[pic+1]
+            fft_coeff_filtrati4[pic+2] = fft_coeff[pic+2]
         
-    if indice == 12:
-        soglia = 5e6
-    
+        
+    if indice == 12: # MODIFICARE
+        soglia = 0.17e8
+
+        picco1 = indiciPicchi[0]
+        
+        fft_coeff_filtrati[picco1] = fft_coeff[picco1]
+        
+        picco2 = indiciPicchi[9]
+        
+        picchi2 = [picco1, picco2]
+        
+        for pic in picchi2:
+            fft_coeff_filtrati2[pic] = fft_coeff[pic]
+        
+        for pic in indiciPicchi:
+            fft_coeff_filtrati3[pic] = fft_coeff[pic]
+            
+        for pic in indiciPicchi:
+            fft_coeff_filtrati4[pic-2] = fft_coeff[pic-2]
+            fft_coeff_filtrati4[pic-1] = fft_coeff[pic-1]
+            fft_coeff_filtrati4[pic]   = fft_coeff[pic]
+            fft_coeff_filtrati4[pic+1] = fft_coeff[pic+1]
+            fft_coeff_filtrati4[pic+2] = fft_coeff[pic+2]
     
     return fft_coeff_filtrati, fft_coeff_filtrati2, fft_coeff_filtrati3, fft_coeff_filtrati4
     
@@ -1145,12 +1171,24 @@ def esercitazioneB2(parte):
         coeff_fft, pot = fftSegnaleB1(dati)
         plottaFFT(coeff_fft, pot)
         
-        potenza = np.abs(fft_coeff) ** 2
-        indiciPicchi, _ = find_peaks(potenza, height=5e6)
+        indiciPicchi, _ = find_peaks(pot, height=5e6)
+        
+        picchi = pot[indiciPicchi]
         print(f"Picchi trovati: {picchi}")
-        picchi = potenza[indiciPicchi]
         
         fft1, fft2, fft3, fft4 = mascheraRumoreB(coeff_fft, index+10) # 12
+        
+        segnale_fft = []
+        segnale_seni_coseni = []
+        
+        for i, FFT in enumerate(fft):
+            segnale_fft.append( risintetizzaSegnale(FFT) )
+            segnale_seni_coseni.append( risintetizzaSeniCoseni(FFT) )
+            
+            plottaRisintonizzataB(dati, segnale_fft[i], index=index+10 )        # CAMBIARE FUNZIONE CON NUOVI INDICI
+            plottaRisintonizzataB(dati, segnale_seni_coseni, index=index+10 )   # CAMBIARE FUNZIONE CON NUOVI INDICI
+
+            salvaCanale(segnale_fft[i], 44100, URL+f"{i+1}.wav")
         
     else:
         print("Parte non riconosciuta.")
